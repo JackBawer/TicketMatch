@@ -11,7 +11,15 @@ public class Utilisateur {
     public Utilisateur() {
     }
 
-    // Parameterized constructor
+    // Constructor without idUtilisateur (for new users)
+    public Utilisateur(String nom, String email, String motDePasse, String role) {
+        this.nom = nom;
+        this.email = email;
+        this.motDePasse = motDePasse;
+        this.role = role;
+    }
+
+    // Constructor with idUtilisateur (for existing users)
     public Utilisateur(int idUtilisateur, String nom, String email, String motDePasse, String role) {
         this.idUtilisateur = idUtilisateur;
         this.nom = nom;
