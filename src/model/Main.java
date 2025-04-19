@@ -6,6 +6,8 @@ public class Main {
     public static void main(String[] args) {
         UtilisateurDAOImpl utilisateurDAO = new UtilisateurDAOImpl();
 
+        AdminPanel adminPanel = new AdminPanel();
+
         try {
             // Register a new user
             Utilisateur newUser = new Utilisateur(0, "Jane Doe", "jane.doe@example.com", "securePassword123", "client");
@@ -21,6 +23,13 @@ public class Main {
             if (authenticatedUser != null) {
                 System.out.println("Authentication successful. Welcome, " + authenticatedUser.getNom() + "!");
                 System.out.println("Role: " + authenticatedUser.getRole());
+
+                // Check if user is admin and grant privileges accordingly
+                if (authenticatedUser.getRole().equals("admin")) {
+                    System.out.println("Admin privileges granted.");
+                    adminPanel.initiate();
+                }
+
             } else {
                 System.out.println("Authentication failed. Invalid email or password.");
             }
@@ -34,5 +43,6 @@ public class Main {
         } catch (SQLException e) {
             e.printStackTrace();
         }
+
     }
 }
