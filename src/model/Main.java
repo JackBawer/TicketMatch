@@ -7,6 +7,7 @@ public class Main {
         UtilisateurDAOImpl utilisateurDAO = new UtilisateurDAOImpl();
 
         AdminPanel adminPanel = new AdminPanel();
+        UserPanel userPanel = new UserPanel();
 
         try {
             // Register a new user
@@ -28,6 +29,8 @@ public class Main {
                 if (authenticatedUser.getRole().equals("admin")) {
                     System.out.println("Admin privileges granted.");
                     adminPanel.initiate();
+                } else {
+                    userPanel.initiate(newUser.getIdUtilisateur());
                 }
 
             } else {

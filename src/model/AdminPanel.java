@@ -41,6 +41,7 @@ public class AdminPanel {
                 default:
                     System.out.println("Invalid option!");
             }
+            scanner.close();
         }
     }
 
