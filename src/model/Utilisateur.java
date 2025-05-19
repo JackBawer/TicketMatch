@@ -6,26 +6,29 @@ public class Utilisateur {
     private String email;      // Maps to email
     private String motDePasse; // Maps to mot_de_passe
     private String role;       // Maps to role (client/admin)
+    private double balance;
 
     // Default constructor
     public Utilisateur() {
     }
 
     // Constructor without idUtilisateur (for new users)
-    public Utilisateur(String nom, String email, String motDePasse, String role) {
+    public Utilisateur(String nom, String email, String motDePasse, String role, int balance) {
         this.nom = nom;
         this.email = email;
         this.motDePasse = motDePasse;
         this.role = role;
+        this.balance = balance;
     }
 
     // Constructor with idUtilisateur (for existing users)
-    public Utilisateur(int idUtilisateur, String nom, String email, String motDePasse, String role) {
+    public Utilisateur(int idUtilisateur, String nom, String email, String motDePasse, String role, int balance) {
         this.idUtilisateur = idUtilisateur;
         this.nom = nom;
         this.email = email;
         this.motDePasse = motDePasse;
         this.role = role;
+        this.balance = balance;
     }
 
     // Getters and Setters
@@ -67,6 +70,14 @@ public class Utilisateur {
 
     public void setRole(String role) {
         this.role = role;
+    }
+
+    public double getBalance() {
+        return balance;
+    }
+
+    public void setBalance(double balance) {
+        this.balance = balance;
     }
 
     // toString method for debugging

@@ -2,15 +2,17 @@ package model;
 
 public class Ticket {
     private int serialNum;
-    private int price;
-    private int owner;
-    private int matchID;
+    private Integer owner;
+    private Integer matchID;
+    private double price;
+    private int stock;
 
-    public Ticket(int serialNum, int price, int owner, int matchID) {
+    public Ticket(int serialNum, Integer owner, Integer matchID, double price, int stock) {
         this.serialNum = serialNum;
+        this.owner = null;
+        this.matchID = null;
         this.price = price;
-        this.owner = owner;
-        this.matchID = matchID;
+        this.stock = stock;
     }
 
     public int getSerialNum() {
@@ -21,11 +23,11 @@ public class Ticket {
         this.serialNum = serialNum;
     }
 
-    public int getPrice() {
+    public double getPrice() {
         return price;
     }
 
-    public void setPrice(int price) {
+    public void setPrice(double price) {
         this.price = price;
     }
 
@@ -43,5 +45,13 @@ public class Ticket {
 
     public void setMatchID(int matchID) {
         this.matchID = matchID;
+    }
+
+    public int getStock() {
+        return stock;
+    }
+
+    public void setStock(int stock) {
+        this.stock = stock;
     }
 }

@@ -11,7 +11,7 @@ public class Main {
 
         try {
             // Register a new user
-            Utilisateur newUser = new Utilisateur(0, "Jane Doe", "jane.doe@example.com", "securePassword123", "client");
+            Utilisateur newUser = new Utilisateur(0, "Jane Doe", "jane.doe@example.com", "securePassword123", "client", 5);
             boolean isRegistered = utilisateurDAO.register(newUser);
             if (isRegistered) {
                 System.out.println("User registered successfully.");

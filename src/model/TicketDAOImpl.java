@@ -19,9 +19,10 @@ public class TicketDAOImpl implements TicketDAO {
         if (rs.next()) {
             return new Ticket(
                     rs.getInt("id_ticket"),
-                    rs.getInt("prix"),
                     rs.getInt("id_utilisateur"),
-                    rs.getInt("id_match")
+                    rs.getInt("id_match"),
+                    rs.getInt("prix"),
+                    rs.getInt("stock")
             );
         }
         return null;
@@ -36,9 +37,10 @@ public class TicketDAOImpl implements TicketDAO {
         if (rs.next()) {
             return List.of(new Ticket(
                     rs.getInt("id_ticket"),
-                    rs.getInt("prix"),
                     rs.getInt("id_utilisateur"),
-                    rs.getInt("id_match")
+                    rs.getInt("id_match"),
+                    rs.getInt("prix"),
+                    rs.getInt("stock")
             ));
         }
         return List.of();
@@ -55,12 +57,14 @@ public class TicketDAOImpl implements TicketDAO {
 
     @Override
     public int insert(Ticket ticket) throws SQLException {
-        String sql = "INSERT INTO ticket (prix, id_utilisateur, id_match) VALUES (?, ?, ?)";
+        String sql = "INSERT INTO ticket (id_ticket, id_utilisateur, id_match, prix, stock) VALUES (?,?,?,?,?)";
         Connection conn = DatabaseConnection.getConnection();
         PreparedStatement ps = conn.prepareStatement(sql, PreparedStatement.RETURN_GENERATED_KEYS);
-        ps.setInt(1, ticket.getPrice());
         ps.setInt(1, ticket.getSerialNum());
-        ps.setInt(1, ticket.getMatchID());
+        ps.setInt(2, ticket.getOwner());
+        ps.setInt(3, ticket.getMatchID());
+        ps.setDouble(4, ticket.getPrice());
+        ps.setInt(5, ticket.getStock());
 
         int affectedRows = ps.executeUpdate();
         if (affectedRows > 0) {
@@ -75,12 +79,13 @@ public class TicketDAOImpl implements TicketDAO {
 
     @Override
     public int update(Ticket ticket) throws SQLException {
-        String sql = "UPDATE ticket SET prix = ?, id_utilisateur = ?, id_match = ? WHERE id_ticket = ?";
+        String sql = "UPDATE ticket SET stock = ?, id_utilisateur = ?, id_match = ? WHERE id_ticket = ?";
         Connection conn = DatabaseConnection.getConnection();
         PreparedStatement ps = conn.prepareStatement(sql);
-        ps.setInt(1, ticket.getPrice());
-        ps.setInt(1, ticket.getSerialNum());
-        ps.setInt(1, ticket.getMatchID());
+        ps.setInt(1, ticket.getStock());
+        ps.setInt(2, ticket.getOwner());
+        ps.setInt(3, ticket.getMatchID());
+        ps.setInt(4, ticket.getSerialNum());
         return ps.executeUpdate();
     }
 

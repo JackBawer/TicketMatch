@@ -23,7 +23,7 @@ public class UtilisateurService {
         if (!email.contains("@")) {
             throw new IllegalArgumentException("Invalid email format.");
         }
-        Utilisateur newUser = new Utilisateur(0, name, email, password, role);
+        Utilisateur newUser = new Utilisateur(0, name, email, password, role, 0);
         try {
             return utilisateurDAO.register(newUser);
         } catch (IllegalArgumentException e) {
