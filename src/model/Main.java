@@ -11,7 +11,7 @@ public class Main {
 
         try {
             // Register a new user
-            Utilisateur newUser = new Utilisateur(0, "Jane Doe", "jane.doe@example.com", "securePassword123", "client", 5);
+            Utilisateur newUser = new Utilisateur(1, "John Doe", "johndoe123@example.com", "password123", "admin", 50);
             boolean isRegistered = utilisateurDAO.register(newUser);
             if (isRegistered) {
                 System.out.println("User registered successfully.");
@@ -20,7 +20,7 @@ public class Main {
             }
 
             // Authenticate the registered user
-            Utilisateur authenticatedUser = utilisateurDAO.authenticate("jane.doe@example.com", "securePassword123");
+            Utilisateur authenticatedUser = utilisateurDAO.authenticate("johndoe123@gmail.com", "password123");
             if (authenticatedUser != null) {
                 System.out.println("Authentication successful. Welcome, " + authenticatedUser.getNom() + "!");
                 System.out.println("Role: " + authenticatedUser.getRole());
@@ -38,7 +38,7 @@ public class Main {
             }
 
             // Test authentication with incorrect password
-            Utilisateur failedAuthUser = utilisateurDAO.authenticate("jane.doe@example.com", "wrongPassword");
+            Utilisateur failedAuthUser = utilisateurDAO.authenticate("johndoe123@gmail.com", "wrongPassword");
             if (failedAuthUser == null) {
                 System.out.println("Authentication failed as expected with incorrect password.");
             }
