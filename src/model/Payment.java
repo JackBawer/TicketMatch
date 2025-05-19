@@ -6,16 +6,24 @@ public class Payment {
     private int id;
     private Integer ticketSerial;
     private Integer customerId;
-    private String paymentMethod;
-    private String status;
+    private paymentMethod method;
+    private paymentStatus status;
     private Timestamp paymentDate;
 
-    public Payment(int id, Integer ticketSerial, Integer customerId, String paymentMethod, String status, Timestamp paymentDate) {
+    public enum paymentStatus {
+        PENDING, APPROVED, REJECTED
+    }
+
+    public enum paymentMethod {
+        DEBIT, CREDIT
+    }
+
+    public Payment(int id, Integer ticketSerial, Integer customerId, paymentMethod method, paymentStatus status, Timestamp paymentDate) {
         this.id = id;
-        this.ticketSerial = null;
-        this.customerId = null;
-        this.paymentMethod = paymentMethod;
-        this.status = status;
+        this.ticketSerial = ticketSerial;
+        this.customerId = customerId;
+        this.method = paymentMethod.DEBIT;
+        this.status = paymentStatus.PENDING;
         this.paymentDate = paymentDate;
     }
 
@@ -43,19 +51,11 @@ public class Payment {
         this.customerId = customerId;
     }
 
-    public String getPaymentMethod() {
-        return paymentMethod;
-    }
-
-    public void setPaymentMethod(String paymentMethod) {
-        this.paymentMethod = paymentMethod;
-    }
-
-    public String getStatus() {
+    public paymentStatus getStatus() {
         return status;
     }
 
-    public void setStatus(String status) {
+    public void setStatus(paymentStatus status) {
         this.status = status;
     }
 
@@ -65,5 +65,13 @@ public class Payment {
 
     public void setPaymentDate(Timestamp paymentDate) {
         this.paymentDate = paymentDate;
+    }
+
+    public paymentMethod getMethod() {
+        return method;
+    }
+
+    public void setMethod(paymentMethod method) {
+        this.method = method;
     }
 }

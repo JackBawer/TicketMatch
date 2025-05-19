@@ -21,8 +21,8 @@ public class PaymentDAOImpl implements PaymentDAO {
                     rs.getInt("id_paiement"),
                     rs.getInt("id_ticket"),
                     rs.getInt("id_utilisateur"),
-                    rs.getString("mode_paiement"),
-                    rs.getString("statut"),
+                    Payment.paymentMethod.valueOf(rs.getString("payment_method")),
+                    Payment.paymentStatus.valueOf(rs.getString("status")),
                     rs.getTimestamp("date_paiement")
             );
         }
@@ -41,8 +41,8 @@ public class PaymentDAOImpl implements PaymentDAO {
                     rs.getInt("id_paiement"),
                     rs.getInt("id_ticket"),
                     rs.getInt("id_utilisateur"),
-                    rs.getString("mode_paiement"),
-                    rs.getString("statut"),
+                    Payment.paymentMethod.valueOf(rs.getString("payment_method")),
+                    Payment.paymentStatus.valueOf(rs.getString("status")),
                     rs.getTimestamp("date_paiement")
             ));
         }
@@ -66,8 +66,8 @@ public class PaymentDAOImpl implements PaymentDAO {
         ps.setInt(1, payment.getId());
         ps.setInt(2, payment.getTicketSerial());
         ps.setInt(3, payment.getCustomerId());
-        ps.setString(4, payment.getPaymentMethod());
-        ps.setString(5, payment.getStatus());
+        ps.setString(4, payment.getMethod().name());
+        ps.setString(5, payment.getStatus().name());
         ps.setTimestamp(6, payment.getPaymentDate());
         return 0;
     }

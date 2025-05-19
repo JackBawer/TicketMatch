@@ -1,5 +1,9 @@
 package model;
 
+import service.MatchService;
+import service.PaymentService;
+import service.TicketService;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
@@ -8,6 +12,10 @@ import java.sql.SQLException;
 public class UserPanel {
     UtilisateurDAO userDAO = new UtilisateurDAOImpl();
     TicketDAO ticketDAO = new TicketDAOImpl();
+
+    MatchService matchService = new MatchService();
+    TicketService ticketService = new TicketService();
+    PaymentService paymentService = new PaymentService();
 
     List<Ticket> history = new ArrayList<>();
 
