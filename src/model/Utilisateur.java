@@ -1,39 +1,42 @@
 package model;
 
 public class Utilisateur {
-    private int idUtilisateur; // Maps to id_utilisateur
+    private Integer idUtilisateur; // Maps to id_utilisateur
     private String nom;        // Maps to nom
     private String email;      // Maps to email
     private String motDePasse; // Maps to mot_de_passe
     private String role;       // Maps to role (client/admin)
+    private double balance;
 
     // Default constructor
     public Utilisateur() {
     }
 
     // Constructor without idUtilisateur (for new users)
-    public Utilisateur(String nom, String email, String motDePasse, String role) {
+    public Utilisateur(String nom, String email, String motDePasse, String role, int balance) {
         this.nom = nom;
         this.email = email;
         this.motDePasse = motDePasse;
         this.role = role;
+        this.balance = balance;
     }
 
     // Constructor with idUtilisateur (for existing users)
-    public Utilisateur(int idUtilisateur, String nom, String email, String motDePasse, String role) {
+    public Utilisateur(Integer idUtilisateur, String nom, String email, String motDePasse, String role, int balance) {
         this.idUtilisateur = idUtilisateur;
         this.nom = nom;
         this.email = email;
         this.motDePasse = motDePasse;
         this.role = role;
+        this.balance = balance;
     }
 
     // Getters and Setters
-    public int getIdUtilisateur() {
+    public Integer getIdUtilisateur() {
         return idUtilisateur;
     }
 
-    public void setIdUtilisateur(int idUtilisateur) {
+    public void setIdUtilisateur(Integer idUtilisateur) {
         this.idUtilisateur = idUtilisateur;
     }
 
@@ -67,6 +70,14 @@ public class Utilisateur {
 
     public void setRole(String role) {
         this.role = role;
+    }
+
+    public double getBalance() {
+        return balance;
+    }
+
+    public void setBalance(double balance) {
+        this.balance = balance;
     }
 
     // toString method for debugging

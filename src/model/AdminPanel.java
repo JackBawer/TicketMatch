@@ -8,8 +8,10 @@ import java.util.Scanner;
 public class AdminPanel {
     MatchDAO matchDAO = new MatchDAOImpl();
 
+    boolean running = true;
+
     public void initiate() {
-        while(true) {
+        while(running) {
             System.out.println("""
                     === Admin Panel ===
                     Select an option:
@@ -37,10 +39,12 @@ public class AdminPanel {
                     removeMatch();
                     break;
                 case 5:
-                return;
+                    running = false;
+                    return;
                 default:
                     System.out.println("Invalid option!");
             }
+            scanner.close();
         }
     }
 

@@ -8,7 +8,7 @@ public class UtilisateurDAOImpl implements UtilisateurDAO {
 
     @Override
     public Utilisateur get(int id) throws SQLException {
-        String sql = "SELECT id_utilisateur, nom, email, mot_de_passe, role FROM utilisateur WHERE id_utilisateur = ?";
+        String sql = "SELECT id_utilisateur, nom, email, mot_de_passe, role, balance FROM utilisateur WHERE id_utilisateur = ?";
         try (Connection con = DatabaseConnection.getConnection();
              PreparedStatement ps = con.prepareStatement(sql)) {
 
@@ -21,7 +21,8 @@ public class UtilisateurDAOImpl implements UtilisateurDAO {
                             rs.getString("nom"),
                             rs.getString("email"),
                             rs.getString("mot_de_passe"),
-                            rs.getString("role")
+                            rs.getString("role"),
+                            rs.getInt("balance")
                     );
                 }
             }
@@ -31,7 +32,7 @@ public class UtilisateurDAOImpl implements UtilisateurDAO {
 
     @Override
     public List<Utilisateur> getAll() throws SQLException {
-        String sql = "SELECT id_utilisateur, nom, email, mot_de_passe, role FROM utilisateur";
+        String sql = "SELECT id_utilisateur, nom, email, mot_de_passe, role, balance FROM utilisateur";
         List<Utilisateur> utilisateurs = new ArrayList<>();
 
         try (Connection con = DatabaseConnection.getConnection();
@@ -44,7 +45,8 @@ public class UtilisateurDAOImpl implements UtilisateurDAO {
                         rs.getString("nom"),
                         rs.getString("email"),
                         rs.getString("mot_de_passe"),
-                        rs.getString("role")
+                        rs.getString("role"),
+                        rs.getInt("balance")
                 );
                 utilisateurs.add(utilisateur);
             }
@@ -143,7 +145,7 @@ public class UtilisateurDAOImpl implements UtilisateurDAO {
 
     // Authentification
     public Utilisateur authenticate(String email, String password) throws SQLException {
-        String sql = "SELECT id_utilisateur, nom, email, mot_de_passe, role FROM utilisateur WHERE email = ?";
+        String sql = "SELECT id_utilisateur, nom, email, mot_de_passe, role, balance FROM utilisateur WHERE email = ?";
         try (Connection con = DatabaseConnection.getConnection();
              PreparedStatement ps = con.prepareStatement(sql)) {
 
@@ -156,7 +158,8 @@ public class UtilisateurDAOImpl implements UtilisateurDAO {
                             rs.getString("nom"),
                             rs.getString("email"),
                             null, // Do not return the password
-                            rs.getString("role")
+                            rs.getString("role"),
+                            rs.getInt("balance")
                     );
                 }
             }
