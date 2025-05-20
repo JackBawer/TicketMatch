@@ -166,4 +166,21 @@ public class UtilisateurDAOImpl implements UtilisateurDAO {
         }
         return null; // Authentication failed
     }
+
+    public boolean usernameExists(String username) throws SQLException {
+        String sql = "SELECT 1 FROM utilisateur WHERE nom = ?";
+        Connection conn = DatabaseConnection.getConnection();
+        PreparedStatement ps = conn.prepareStatement(sql);
+        ResultSet rs = ps.executeQuery();
+        return rs.next();
+    }
+
+    public boolean emailExists(String email) throws SQLException {
+        String sql = "SELECT 1 FROM utilisateur WHERE email = ?";
+        Connection conn = DatabaseConnection.getConnection();
+        PreparedStatement ps = conn.prepareStatement(sql);
+        ps.setString(1, email);
+        ResultSet rs = ps.executeQuery();
+        return rs.next();
+    }
 }

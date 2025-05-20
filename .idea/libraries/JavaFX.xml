@@ -1,7 +1,6 @@
 <component name="libraryTable">
-  <library name="lib">
+  <library name="JavaFX">
     <CLASSES>
-      <root url="file:///usr/lib/jvm/java-24-openjfx/lib" />
       <root url="file:///usr/lib/jvm/java-24-openjfx/lib" />
     </CLASSES>
     <JAVADOC />
@@ -10,11 +9,8 @@
     </NATIVE>
     <SOURCES>
       <root url="file:///usr/lib/jvm/java-24-openjfx/lib" />
-      <root url="file:///usr/lib/jvm/java-24-openjfx/lib" />
     </SOURCES>
     <jarDirectory url="file:///usr/lib/jvm/java-24-openjfx/lib" recursive="false" />
-    <jarDirectory url="file:///usr/lib/jvm/java-24-openjfx/lib" recursive="false" />
-    <jarDirectory url="file:///usr/lib/jvm/java-24-openjfx/lib" recursive="false" type="SOURCES" />
     <jarDirectory url="file:///usr/lib/jvm/java-24-openjfx/lib" recursive="false" type="SOURCES" />
   </library>
 </component>
