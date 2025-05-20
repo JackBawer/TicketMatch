@@ -1,41 +1,24 @@
 package view;
 
-import model.AdminPanel;
-import model.UserPanel;
 import model.Utilisateur;
 
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.awt.event.WindowAdapter;
 
-public class MainFrame extends JFrame {
+public class AdminFrame extends JFrame {
     private final Utilisateur user;
-    private UserPanel userPanel;
-    private AdminPanel adminPanel;
-    private MatchPanel matchPanel;
-
-
-    public MainFrame(Utilisateur user) {
+    public AdminFrame(Utilisateur user) {
         this.user = user;
-        this.userPanel = new UserPanel();
-        this.adminPanel = new AdminPanel();
-
-        initializeUI();
     }
-
-    private void initializeUI() {
-        setTitle("User Panel - " + user.getNom());
-        setSize(900, 600);
+    private void initialize() {
+        setTitle("Admin Panel - " + user.getNom());
+        setSize(900,600);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setLocationRelativeTo(null);
 
-        // Main panel
-        JPanel mainPanel = new JPanel(new BorderLayout());
-        mainPanel.setBackground(new Color(245, 245, 250));
+        JPanel adminPanel = new JPanel();
+        adminPanel.setBackground(new Color(245, 245, 250));
 
-        // Header panel
         JPanel headerPanel = new JPanel() {
             @Override
             protected void paintComponent(Graphics g) {
@@ -78,34 +61,15 @@ public class MainFrame extends JFrame {
         contentPanel.setBackground(new Color(245, 245, 250));
         contentPanel.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
 
-        // Create task list panel
-        matchPanel = new MatchPanel();
+        adminPanel.add(headerPanel, BorderLayout.NORTH);
+        adminPanel.add(contentPanel, BorderLayout.CENTER);
 
-        // Create stats panel
-
-        // Create tabbed pane
-        JTabbedPane tabbedPane = new JTabbedPane();
-        tabbedPane.setFont(new Font("Arial", Font.PLAIN, 14));
-
-
-        contentPanel.add(tabbedPane, BorderLayout.CENTER);
-
-        // Add panels to main panel
-        mainPanel.add(headerPanel, BorderLayout.NORTH);
-        mainPanel.add(contentPanel, BorderLayout.CENTER);
-
-        // Add main panel to frame
-        add(mainPanel);
-
-        // Add action listeners
-        logoutButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                LoginFrame loginFrame = new LoginFrame();
-                loginFrame.setVisible(true);
-                dispose();
-            }
-        });
+        add(adminPanel);
+        setVisible(true);
     }
 
+    public static void main(String[] args) {
+        AdminFrame adminFrame = new AdminFrame(new Utilisateur());
+        adminFrame.initialize();
+    }
 }

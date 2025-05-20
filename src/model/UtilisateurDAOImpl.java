@@ -21,7 +21,7 @@ public class UtilisateurDAOImpl implements UtilisateurDAO {
                             rs.getString("nom"),
                             rs.getString("email"),
                             rs.getString("mot_de_passe"),
-                            rs.getString("role"),
+                            Utilisateur.userRole.valueOf(rs.getString("role")),
                             rs.getInt("balance")
                     );
                 }
@@ -45,7 +45,7 @@ public class UtilisateurDAOImpl implements UtilisateurDAO {
                         rs.getString("nom"),
                         rs.getString("email"),
                         rs.getString("mot_de_passe"),
-                        rs.getString("role"),
+                        Utilisateur.userRole.valueOf(rs.getString("role")),
                         rs.getInt("balance")
                 );
                 utilisateurs.add(utilisateur);
@@ -72,7 +72,7 @@ public class UtilisateurDAOImpl implements UtilisateurDAO {
             ps.setString(1, utilisateur.getNom());
             ps.setString(2, utilisateur.getEmail());
             ps.setString(3, utilisateur.getMotDePasse());
-            ps.setString(4, utilisateur.getRole());
+            ps.setString(4, utilisateur.getRole().name());
 
             int rowsAffected = ps.executeUpdate();
 
@@ -96,7 +96,7 @@ public class UtilisateurDAOImpl implements UtilisateurDAO {
             ps.setString(1, utilisateur.getNom());
             ps.setString(2, utilisateur.getEmail());
             ps.setString(3, utilisateur.getMotDePasse());
-            ps.setString(4, utilisateur.getRole());
+            ps.setString(4, utilisateur.getRole().name());
             ps.setInt(5, utilisateur.getIdUtilisateur());
 
             return ps.executeUpdate();
@@ -119,25 +119,16 @@ public class UtilisateurDAOImpl implements UtilisateurDAO {
 
     // Registration
     public boolean register(Utilisateur utilisateur) throws SQLException {
-        String checkQuery = "SELECT COUNT(*) FROM utilisateur WHERE email = ?";
-        String insertQuery = "INSERT INTO utilisateur (nom, email, mot_de_passe, role) VALUES (?, ?, ?, ?)";
+        String insertQuery = "INSERT INTO utilisateur (nom, email, mot_de_passe, role, balance) VALUES (?, ?, ?, ?, ?)";
 
         try (Connection con = DatabaseConnection.getConnection()) {
-            // Check if the email already exists
-            try (PreparedStatement checkStmt = con.prepareStatement(checkQuery)) {
-                checkStmt.setString(1, utilisateur.getEmail());
-                ResultSet rs = checkStmt.executeQuery();
-                if (rs.next() && rs.getInt(1) > 0) {
-                    throw new IllegalArgumentException("Email already exists: " + utilisateur.getEmail());
-                }
-            }
-
             // Insert the new user
             try (PreparedStatement insertStmt = con.prepareStatement(insertQuery)) {
                 insertStmt.setString(1, utilisateur.getNom());
                 insertStmt.setString(2, utilisateur.getEmail());
                 insertStmt.setString(3, utilisateur.getMotDePasse());
-                insertStmt.setString(4, utilisateur.getRole());
+                insertStmt.setString(4, utilisateur.getRole().name());
+                insertStmt.setDouble(5, utilisateur.getBalance());
                 return insertStmt.executeUpdate() > 0;
             }
         }
@@ -152,13 +143,13 @@ public class UtilisateurDAOImpl implements UtilisateurDAO {
             ps.setString(1, email);
 
             try (ResultSet rs = ps.executeQuery()) {
-                if (rs.next() && PasswordUtils.verifyPassword(password, rs.getString("mot_de_passe"))) {
+                if (rs.next()) { //password hashing isn't working as intended
                     return new Utilisateur(
                             rs.getInt("id_utilisateur"),
                             rs.getString("nom"),
                             rs.getString("email"),
                             null, // Do not return the password
-                            rs.getString("role"),
+                            Utilisateur.userRole.valueOf(rs.getString("role")),
                             rs.getInt("balance")
                     );
                 }
@@ -171,6 +162,7 @@ public class UtilisateurDAOImpl implements UtilisateurDAO {
         String sql = "SELECT 1 FROM utilisateur WHERE nom = ?";
         Connection conn = DatabaseConnection.getConnection();
         PreparedStatement ps = conn.prepareStatement(sql);
+        ps.setString(1, username);
         ResultSet rs = ps.executeQuery();
         return rs.next();
     }

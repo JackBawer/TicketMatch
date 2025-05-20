@@ -22,7 +22,7 @@ public class LoginFrame extends JFrame {
     }
 
     private void initializeUI() {
-        setTitle("Task Manager - Login");
+        setTitle("Ticket Seller - Login");
         setSize(500, 500);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setLocationRelativeTo(null);
@@ -70,7 +70,7 @@ public class LoginFrame extends JFrame {
         gbc.fill = GridBagConstraints.HORIZONTAL;
 
         // Title
-        JLabel titleLabel = new JLabel("Task Manager");
+        JLabel titleLabel = new JLabel("Ticket Seller");
         titleLabel.setFont(new Font("Arial", Font.BOLD, 24));
         titleLabel.setForeground(new Color(44, 62, 80));
         titleLabel.setHorizontalAlignment(SwingConstants.CENTER);
@@ -164,9 +164,15 @@ public class LoginFrame extends JFrame {
                     Utilisateur user = userDAO.authenticate(email, password);
 
                     if (user != null) {
-                        MainFrame mainFrame = new MainFrame(user);
-                        mainFrame.setVisible(true);
-                        dispose();
+                        if (user.getRole().equals(Utilisateur.userRole.ADMIN)) {
+                            AdminFrame adminFrame = new AdminFrame(user);
+                            adminFrame.setVisible(true);
+                            dispose();
+                        } else {
+                            MainFrame mainFrame = new MainFrame(user);
+                            mainFrame.setVisible(true);
+                            dispose();
+                        }
                     } else {
                         JOptionPane.showMessageDialog(LoginFrame.this,
                                 "Invalid email or password",
@@ -187,5 +193,12 @@ public class LoginFrame extends JFrame {
                 dispose();
             }
         });
+
+        mainPanel.setVisible(true);
+    }
+
+    public static void main(String[] args) {
+        LoginFrame loginFrame = new LoginFrame();
+        loginFrame.setVisible(true);
     }
 }

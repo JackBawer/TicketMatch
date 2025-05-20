@@ -16,7 +16,7 @@ public class UtilisateurService {
         this.utilisateurDAO = utilisateurDAO;
     }
 
-    public boolean registerUser(String name, String email, String password, String role) {
+    public boolean registerUser(String name, String email, String password, Utilisateur.userRole role) {
         if (name == null || email == null || password == null || role == null) {
             throw new IllegalArgumentException("All fields are required.");
         }

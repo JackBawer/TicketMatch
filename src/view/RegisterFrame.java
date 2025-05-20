@@ -1,5 +1,6 @@
 package view;
 
+import model.Utilisateur;
 import model.UtilisateurDAOImpl;
 
 import javax.swing.*;
@@ -15,7 +16,7 @@ public class RegisterFrame extends JFrame {
     private JPasswordField confirmPasswordField;
     private JButton registerButton;
     private JButton backButton;
-    private UtilisateurDAOImpl userDAO;
+    private final UtilisateurDAOImpl userDAO;
 
     public RegisterFrame() {
         userDAO = new UtilisateurDAOImpl();
@@ -197,7 +198,6 @@ public class RegisterFrame extends JFrame {
                 }
 
                 try {
-
                     if (userDAO.usernameExists(username)) {
                         JOptionPane.showMessageDialog(RegisterFrame.this,
                                 "Username already exists",
@@ -216,6 +216,11 @@ public class RegisterFrame extends JFrame {
                 } catch (SQLException sqlx) {
                     sqlx.printStackTrace();
                 }
+
+                Utilisateur user = new Utilisateur(username, email, password, Utilisateur.userRole.USER, 0);
+
+                try {
+
                 boolean success = userDAO.register(user);
 
                 if (success) {
@@ -233,6 +238,9 @@ public class RegisterFrame extends JFrame {
                             "Registration Error",
                             JOptionPane.ERROR_MESSAGE);
                 }
+            } catch (SQLException sqlx) {
+                    sqlx.printStackTrace();
+                }
             }
         });
 
@@ -244,5 +252,10 @@ public class RegisterFrame extends JFrame {
                 dispose();
             }
         });
+    }
+
+    public static void main(String[] args) {
+        RegisterFrame registerFrame = new RegisterFrame();
+        registerFrame.initializeUI();
     }
 }

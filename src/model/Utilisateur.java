@@ -5,29 +5,33 @@ public class Utilisateur {
     private String nom;        // Maps to nom
     private String email;      // Maps to email
     private String motDePasse; // Maps to mot_de_passe
-    private String role;       // Maps to role (client/admin)
+    private userRole role;       // Maps to role (client/admin)
     private double balance;
+
+    public enum userRole {
+        USER, ADMIN
+    }
 
     // Default constructor
     public Utilisateur() {
     }
 
     // Constructor without idUtilisateur (for new users)
-    public Utilisateur(String nom, String email, String motDePasse, String role, int balance) {
+    public Utilisateur(String nom, String email, String motDePasse, userRole role, int balance) {
         this.nom = nom;
         this.email = email;
         this.motDePasse = motDePasse;
-        this.role = role;
+        this.role = userRole.USER;
         this.balance = balance;
     }
 
     // Constructor with idUtilisateur (for existing users)
-    public Utilisateur(Integer idUtilisateur, String nom, String email, String motDePasse, String role, int balance) {
+    public Utilisateur(Integer idUtilisateur, String nom, String email, String motDePasse, userRole role, int balance) {
         this.idUtilisateur = idUtilisateur;
         this.nom = nom;
         this.email = email;
         this.motDePasse = motDePasse;
-        this.role = role;
+        this.role = userRole.USER;
         this.balance = balance;
     }
 
@@ -64,11 +68,11 @@ public class Utilisateur {
         this.motDePasse = motDePasse;
     }
 
-    public String getRole() {
+    public userRole getRole() {
         return role;
     }
 
-    public void setRole(String role) {
+    public void setRole(userRole role) {
         this.role = role;
     }
 
