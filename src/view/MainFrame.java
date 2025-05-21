@@ -8,7 +8,6 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.awt.event.WindowAdapter;
 
 public class MainFrame extends JFrame {
     private final Utilisateur user;
@@ -27,7 +26,7 @@ public class MainFrame extends JFrame {
 
     private void initializeUI() {
         setTitle("User Panel - " + user.getNom());
-        setSize(900, 600);
+        setSize(1200, 700);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setLocationRelativeTo(null);
 
@@ -78,17 +77,37 @@ public class MainFrame extends JFrame {
         contentPanel.setBackground(new Color(245, 245, 250));
         contentPanel.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
 
+        JPanel fundPanel = new JPanel();
+        fundPanel.setLayout(new BoxLayout(fundPanel, BoxLayout.PAGE_AXIS));
+        fundPanel.setBackground(new Color(245, 245, 250));
+        fundPanel.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
+
+        JLabel JBalance = new JLabel("Current Balance: " + user.getBalance() + "$");
+        JBalance.setFont(new Font("Arial", Font.BOLD, 14));
+        JBalance.setForeground(new Color(70, 130, 180));
+        JBalance.setBorder(BorderFactory.createEmptyBorder(5, 15, 5, 15));
+        JBalance.setAlignmentX(Component.CENTER_ALIGNMENT);
+        fundPanel.add(JBalance);
+
         // Create task list panel
         matchPanel = new MatchPanel();
 
-        // Create stats panel
+        JPanel actionPanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
+        actionPanel.setOpaque(false);
+        actionPanel.setBackground(new Color(245, 245, 250));
+        actionPanel.setBorder(BorderFactory.createEtchedBorder());
 
-        // Create tabbed pane
-        JTabbedPane tabbedPane = new JTabbedPane();
-        tabbedPane.setFont(new Font("Arial", Font.PLAIN, 14));
+        JButton fundButton = new JButton("Add funds");
+        fundButton.setFont(new Font("Arial", Font.BOLD, 14));
+        fundButton.setForeground(Color.WHITE);
+        fundButton.setBackground(new Color(70, 130, 180));
+        fundButton.setBorder(BorderFactory.createEmptyBorder(5, 15, 5, 15));
+        fundButton.setAlignmentX(Component.CENTER_ALIGNMENT);
+        fundButton.setCursor(new Cursor(Cursor.HAND_CURSOR));
+        fundPanel.add(fundButton);
 
-
-        contentPanel.add(tabbedPane, BorderLayout.CENTER);
+        contentPanel.add(actionPanel, BorderLayout.CENTER);
+        contentPanel.add(fundPanel, BorderLayout.WEST);
 
         // Add panels to main panel
         mainPanel.add(headerPanel, BorderLayout.NORTH);
@@ -106,6 +125,20 @@ public class MainFrame extends JFrame {
                 dispose();
             }
         });
+
+        fundButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                FundFrame fundFrame = new FundFrame(user);
+                fundFrame.setVisible(true);
+                dispose();
+            }
+        });
+
     }
 
+    public static void main(String[] args) {
+        MainFrame mainFrame = new MainFrame(new Utilisateur());
+        mainFrame.setVisible(true);
+    }
 }

@@ -89,7 +89,7 @@ public class UtilisateurDAOImpl implements UtilisateurDAO {
 
     @Override
     public int update(Utilisateur utilisateur) throws SQLException {
-        String sql = "UPDATE utilisateur SET nom = ?, email = ?, mot_de_passe = ?, role = ? WHERE id_utilisateur = ?";
+        String sql = "UPDATE utilisateur SET nom = ?, email = ?, mot_de_passe = ?, role = ?, balance = ? WHERE id_utilisateur = ?";
         try (Connection con = DatabaseConnection.getConnection();
              PreparedStatement ps = con.prepareStatement(sql)) {
 
@@ -97,7 +97,8 @@ public class UtilisateurDAOImpl implements UtilisateurDAO {
             ps.setString(2, utilisateur.getEmail());
             ps.setString(3, utilisateur.getMotDePasse());
             ps.setString(4, utilisateur.getRole().name());
-            ps.setInt(5, utilisateur.getIdUtilisateur());
+            ps.setDouble(5, utilisateur.getBalance());
+            ps.setInt(6, utilisateur.getIdUtilisateur());
 
             return ps.executeUpdate();
         }
@@ -148,7 +149,7 @@ public class UtilisateurDAOImpl implements UtilisateurDAO {
                             rs.getInt("id_utilisateur"),
                             rs.getString("nom"),
                             rs.getString("email"),
-                            null, // Do not return the password
+                            rs.getString("mot_de_passe"), // Do not return the password
                             Utilisateur.userRole.valueOf(rs.getString("role")),
                             rs.getInt("balance")
                     );
