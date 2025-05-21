@@ -145,8 +145,8 @@ public class FundFrame extends JFrame {
                             JOptionPane.ERROR_MESSAGE);
                     return;
                 } else {
-                    ValidateFrame validateFrame = new ValidateFrame(user, funds);
-                    validateFrame.setVisible(true);
+                    FundValidateFrame fundValidateFrame = new FundValidateFrame(user, funds);
+                    fundValidateFrame.setVisible(true);
                     dispose();
                 }
             }

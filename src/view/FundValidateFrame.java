@@ -9,13 +9,13 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.sql.SQLException;
 
-public class ValidateFrame extends JFrame {
+public class FundValidateFrame extends JFrame {
     private final Utilisateur user;
     private final double value;
 
     UtilisateurDAOImpl userDAO = new UtilisateurDAOImpl();
 
-    public ValidateFrame(Utilisateur user, double value) {
+    public FundValidateFrame(Utilisateur user, double value) {
         this.user = user;
         this.value = value;
         initialize();
@@ -118,7 +118,7 @@ public class ValidateFrame extends JFrame {
                 user.setBalance(user.getBalance()+value);
                 try {
                     userDAO.update(user);
-                    JOptionPane.showMessageDialog(ValidateFrame.this,
+                    JOptionPane.showMessageDialog(FundValidateFrame.this,
                             "Operation successful!",
                             "Success!",
                             JOptionPane.INFORMATION_MESSAGE);
@@ -126,7 +126,7 @@ public class ValidateFrame extends JFrame {
                     mainFrame.setVisible(true);
                     dispose();
                 } catch (SQLException sqlx) {
-                    JOptionPane.showMessageDialog(ValidateFrame.this,
+                    JOptionPane.showMessageDialog(FundValidateFrame.this,
                             sqlx.getMessage(),
                             "Error!",
                             JOptionPane.ERROR_MESSAGE);

@@ -4,6 +4,8 @@ import model.Utilisateur;
 
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 
 public class AdminFrame extends JFrame {
     private final Utilisateur user;
@@ -27,8 +29,8 @@ public class AdminFrame extends JFrame {
 
                 // Create gradient background
                 GradientPaint gradient = new GradientPaint(
-                        0, 0, new Color(100, 149, 237), // Cornflower blue
-                        getWidth(), 0, new Color(70, 130, 180) // Steel blue
+                        0, 0, Color.orange,
+                        getWidth(), 0, Color.ORANGE
                 );
                 g2d.setPaint(gradient);
                 g2d.fillRect(0, 0, getWidth(), getHeight());
@@ -45,7 +47,7 @@ public class AdminFrame extends JFrame {
 
         JButton logoutButton = new JButton("Logout");
         logoutButton.setFont(new Font("Arial", Font.BOLD, 14));
-        logoutButton.setForeground(new Color(70, 130, 180));
+        logoutButton.setForeground(Color.orange);
         logoutButton.setBackground(Color.WHITE);
         logoutButton.setFocusPainted(false);
         logoutButton.setBorder(BorderFactory.createEmptyBorder(5, 15, 5, 15));
@@ -61,11 +63,34 @@ public class AdminFrame extends JFrame {
         contentPanel.setBackground(new Color(245, 245, 250));
         contentPanel.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
 
+        // Action panel
+        JPanel actionPanel = new JPanel();
+        actionPanel.setLayout(new BoxLayout(actionPanel, BoxLayout.Y_AXIS));
+        actionPanel.setBackground(new Color(245, 245, 250));
+        actionPanel.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
+
+        JPanel matchPanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
+        matchPanel.setOpaque(false);
+        matchPanel.setBackground(new Color(245, 245, 250));
+        matchPanel.setBorder(BorderFactory.createEtchedBorder());
+
+        contentPanel.add(matchPanel, BorderLayout.CENTER);
+
         adminPanel.add(headerPanel, BorderLayout.NORTH);
+        adminPanel.add(actionPanel, BorderLayout.WEST);
         adminPanel.add(contentPanel, BorderLayout.CENTER);
 
         add(adminPanel);
         setVisible(true);
+
+        logoutButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                LoginFrame loginFrame = new LoginFrame();
+                loginFrame.setVisible(true);
+                dispose();
+            }
+        });
     }
 
     public static void main(String[] args) {

@@ -164,7 +164,7 @@ public class LoginFrame extends JFrame {
                     Utilisateur user = userDAO.authenticate(email, password);
 
                     if (user != null) {
-                        if (user.getRole().equals(Utilisateur.userRole.ADMIN)) {
+                        if (userDAO.get(user.getIdUtilisateur()).getRole().equals(Utilisateur.userRole.ADMIN)) {
                             AdminFrame adminFrame = new AdminFrame(user);
                             adminFrame.setVisible(true);
                             dispose();

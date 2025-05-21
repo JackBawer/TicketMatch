@@ -5,7 +5,7 @@ public class Utilisateur {
     private String nom;        // Maps to nom
     private String email;      // Maps to email
     private String motDePasse; // Maps to mot_de_passe
-    private userRole role;       // Maps to role (client/admin)
+    private userRole role;     // Maps to role (client/admin)
     private double balance;
 
     public enum userRole {
@@ -21,7 +21,7 @@ public class Utilisateur {
         this.nom = nom;
         this.email = email;
         this.motDePasse = motDePasse;
-        this.role = userRole.USER;
+        this.role = role;
         this.balance = balance;
     }
 
