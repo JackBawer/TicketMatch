@@ -169,8 +169,8 @@ public class LoginFrame extends JFrame {
                             adminFrame.setVisible(true);
                             dispose();
                         } else {
-                            MainFrame mainFrame = new MainFrame(user);
-                            mainFrame.setVisible(true);
+                            AdminFrame adminFrame = new AdminFrame(user);
+                            adminFrame.setVisible(true);
                             dispose();
                         }
                     } else {

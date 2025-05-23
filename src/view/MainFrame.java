@@ -245,7 +245,7 @@ public class MainFrame extends JFrame {
     }
 
     public static void main(String[] args) {
-        MainFrame mainFrame = new MainFrame(new Utilisateur());
-        mainFrame.setVisible(true);
+        AdminFrame adminFrame = new AdminFrame(new Utilisateur());
+        adminFrame.setVisible(true);
     }
 }

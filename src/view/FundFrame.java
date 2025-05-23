@@ -128,8 +128,8 @@ public class FundFrame extends JFrame {
         cancelButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                MainFrame mainFrame = new MainFrame(user);
-                mainFrame.setVisible(true);
+                AdminFrame adminFrame = new AdminFrame(user);
+                adminFrame.setVisible(true);
                 dispose();
             }
         });

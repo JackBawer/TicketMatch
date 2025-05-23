@@ -122,8 +122,8 @@ public class FundValidateFrame extends JFrame {
                             "Operation successful!",
                             "Success!",
                             JOptionPane.INFORMATION_MESSAGE);
-                    MainFrame mainFrame = new MainFrame(user);
-                    mainFrame.setVisible(true);
+                    AdminFrame adminFrame = new AdminFrame(user);
+                    adminFrame.setVisible(true);
                     dispose();
                 } catch (SQLException sqlx) {
                     JOptionPane.showMessageDialog(FundValidateFrame.this,
