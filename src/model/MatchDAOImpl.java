@@ -88,7 +88,7 @@ public class MatchDAOImpl implements MatchDAO {
 
     @Override
     public int update(Match match) throws SQLException {
-        String sql = "update match set 'equipe1' = ?, 'equipe2' = ?, 'date_match' = ?, 'heure_match' = ?, 'lieu' = ?, 'capacite_stade' = ? where id_match = ?";
+        String sql = "UPDATE match SET equipe1 = ?, equipe2 = ?, date_match = ?, heure_match = ?, lieu = ?, capacite_stade = ? WHERE id_match = ?";
         try (Connection conn = DatabaseConnection.getConnection();) {
             PreparedStatement ps = conn.prepareStatement(sql);
 
@@ -98,6 +98,7 @@ public class MatchDAOImpl implements MatchDAO {
             ps.setObject(4, match.getMatchTime());
             ps.setString(5, match.getLocation());
             ps.setInt(6, match.getStadiumCap());
+            ps.setInt(7, match.getIdMatch());
 
             return ps.executeUpdate();
         }

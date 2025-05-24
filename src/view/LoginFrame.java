@@ -164,14 +164,16 @@ public class LoginFrame extends JFrame {
                     Utilisateur user = userDAO.authenticate(email, password);
 
                     if (user != null) {
-                        if (userDAO.get(user.getIdUtilisateur()).getRole().equals(Utilisateur.userRole.ADMIN)) {
+                        if (Utilisateur.userRole.ADMIN.equals(user.getRole())) {
                             AdminFrame adminFrame = new AdminFrame(user);
                             adminFrame.setVisible(true);
                             dispose();
+                            System.out.println(user.getRole());
                         } else {
-                            AdminFrame adminFrame = new AdminFrame(user);
-                            adminFrame.setVisible(true);
+                            MainFrame mainFrame = new MainFrame(user);
+                            mainFrame.setVisible(true);
                             dispose();
+                            System.out.println(user.getRole());
                         }
                     } else {
                         JOptionPane.showMessageDialog(LoginFrame.this,

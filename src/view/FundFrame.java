@@ -128,8 +128,8 @@ public class FundFrame extends JFrame {
         cancelButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                AdminFrame adminFrame = new AdminFrame(user);
-                adminFrame.setVisible(true);
+                MainFrame mainFrame = new MainFrame(user);
+                mainFrame.setVisible(true);
                 dispose();
             }
         });
@@ -143,7 +143,6 @@ public class FundFrame extends JFrame {
                             "Please enter a valid number.",
                             "Error",
                             JOptionPane.ERROR_MESSAGE);
-                    return;
                 } else {
                     FundValidateFrame fundValidateFrame = new FundValidateFrame(user, funds);
                     fundValidateFrame.setVisible(true);

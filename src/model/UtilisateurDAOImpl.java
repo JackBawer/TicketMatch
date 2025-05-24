@@ -145,14 +145,17 @@ public class UtilisateurDAOImpl implements UtilisateurDAO {
 
             try (ResultSet rs = ps.executeQuery()) {
                 if (rs.next()) { //password hashing isn't working as intended
-                    return new Utilisateur(
-                            rs.getInt("id_utilisateur"),
-                            rs.getString("nom"),
-                            rs.getString("email"),
-                            rs.getString("mot_de_passe"), // Do not return the password
-                            Utilisateur.userRole.valueOf(rs.getString("role")),
-                            rs.getInt("balance")
-                    );
+                    String storedPassword = rs.getString("mot_de_passe");
+                    if (storedPassword.equals(password)) {
+                        return new Utilisateur(
+                                rs.getInt("id_utilisateur"),
+                                rs.getString("nom"),
+                                rs.getString("email"),
+                                storedPassword,
+                                Utilisateur.userRole.valueOf(rs.getString("role")),
+                                rs.getInt("balance")
+                        );
+                    }
                 }
             }
         }

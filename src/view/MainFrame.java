@@ -1,5 +1,6 @@
 package view;
 
+import com.formdev.flatlaf.FlatLightLaf;
 import model.*;
 
 import javax.swing.*;
@@ -137,6 +138,51 @@ public class MainFrame extends JFrame {
         JPanel matchItemsPanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
         matchItemsPanel.setLayout(new BoxLayout(matchItemsPanel, BoxLayout.PAGE_AXIS));
 
+        JPanel matchHeaderPanel = new JPanel();
+        matchHeaderPanel.setLayout(new BoxLayout(matchHeaderPanel, BoxLayout.X_AXIS));
+        matchHeaderPanel.setBackground(new Color(245, 245, 250));
+        matchHeaderPanel.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
+        matchHeaderPanel.setOpaque(false);
+        matchHeaderPanel.setAlignmentX(Component.LEFT_ALIGNMENT);
+
+        JLabel teamOneHeader = new JLabel("Home team");
+        teamOneHeader.setFont(new Font("Arial", Font.BOLD, 14));
+        teamOneHeader.setForeground(new Color(70, 130, 180));
+        teamOneHeader.setBorder(BorderFactory.createEmptyBorder(5, 15, 5, 15));
+        matchHeaderPanel.add(teamOneHeader);
+
+        JLabel teamTwoHeader = new JLabel("Away team");
+        teamTwoHeader.setFont(new Font("Arial", Font.BOLD, 14));
+        teamTwoHeader.setForeground(new Color(70, 130, 180));
+        teamTwoHeader.setBorder(BorderFactory.createEmptyBorder(5, 15, 5, 15));
+        matchHeaderPanel.add(teamTwoHeader);
+
+        JLabel dateHeader = new JLabel("Date");
+        dateHeader.setFont(new Font("Arial", Font.BOLD, 14));
+        dateHeader.setForeground(new Color(70, 130, 180));
+        dateHeader.setBorder(BorderFactory.createEmptyBorder(5, 15, 5, 15));
+        matchHeaderPanel.add(dateHeader);
+
+        JLabel timeHeader = new JLabel("Time");
+        timeHeader.setFont(new Font("Arial", Font.BOLD, 14));
+        timeHeader.setForeground(new Color(70, 130, 180));
+        timeHeader.setBorder(BorderFactory.createEmptyBorder(5, 15, 5, 15));
+        matchHeaderPanel.add(timeHeader);
+
+        JLabel placeHeader = new JLabel("Place");
+        placeHeader.setFont(new Font("Arial", Font.BOLD, 14));
+        placeHeader.setForeground(new Color(70, 130, 180));
+        placeHeader.setBorder(BorderFactory.createEmptyBorder(5, 15, 5, 15));
+        matchHeaderPanel.add(placeHeader);
+
+        JLabel capacityHeader = new JLabel("Capacity");
+        capacityHeader.setFont(new Font("Arial", Font.BOLD, 14));
+        capacityHeader.setForeground(new Color(70, 130, 180));
+        capacityHeader.setBorder(BorderFactory.createEmptyBorder(5, 15, 5, 15));
+        matchHeaderPanel.add(capacityHeader);
+
+        matchItemsPanel.add(matchHeaderPanel);
+
         try {
             assert matchDAO != null;
             List<Match> matchesList = matchDAO.getAll();
@@ -148,11 +194,17 @@ public class MainFrame extends JFrame {
                 matchItemPanel.setOpaque(false);
                 matchItemPanel.setAlignmentX(Component.LEFT_ALIGNMENT);
 
-                JLabel teams = new JLabel(match.getTeam1() + " - " + match.getTeam2());
-                teams.setFont(new Font("Arial", Font.BOLD, 14));
-                teams.setForeground(new Color(70, 130, 180));
-                teams.setBorder(BorderFactory.createEmptyBorder(5, 15, 5, 15));
-                matchItemPanel.add(teams);
+                JLabel team1 = new JLabel(match.getTeam1());
+                team1.setFont(new Font("Arial", Font.BOLD, 14));
+                team1.setForeground(new Color(70, 130, 180));
+                team1.setBorder(BorderFactory.createEmptyBorder(5, 15, 5, 15));
+                matchItemPanel.add(team1);
+
+                JLabel team2 = new JLabel(match.getTeam2());
+                team2.setFont(new Font("Arial", Font.BOLD, 14));
+                team2.setForeground(new Color(70, 130, 180));
+                team2.setBorder(BorderFactory.createEmptyBorder(5, 15, 5, 15));
+                matchItemPanel.add(team2);
 
                 JLabel date = new JLabel(match.getMatchDate().toString());
                 date.setFont(new Font("Arial", Font.BOLD, 14));
@@ -245,7 +297,9 @@ public class MainFrame extends JFrame {
     }
 
     public static void main(String[] args) {
-        AdminFrame adminFrame = new AdminFrame(new Utilisateur());
-        adminFrame.setVisible(true);
+        FlatLightLaf.setup();
+
+        MainFrame mainFrame = new MainFrame(new Utilisateur());
+        mainFrame.setVisible(true);
     }
 }
