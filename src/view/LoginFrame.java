@@ -26,7 +26,7 @@ public class LoginFrame extends JFrame {
         setSize(500, 500);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setLocationRelativeTo(null);
-        setResizable(true);
+        setResizable(false);
 
         // Main panel with gradient background
         JPanel mainPanel = new JPanel() {

@@ -1,318 +1,359 @@
 package view;
 
 import model.*;
-
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.sql.SQLException;
 import java.util.List;
 
 public class AdminFrame extends JFrame {
     private final Utilisateur user;
     MatchDAOImpl matchDAO;
+    TicketDAOImpl ticketDAO;
 
     public AdminFrame(Utilisateur user) {
         this.user = user;
-        this.matchDAO = new MatchDAOImpl();
+        matchDAO = new MatchDAOImpl();
+        ticketDAO = new TicketDAOImpl();
         initializeUI();
     }
 
     private void initializeUI() {
-        setTitle("Admin Panel - " + user.getNom());
-        setSize(1200, 700);
+        setTitle("Admin Dashboard - " + user.getNom());
+        setSize(1280, 800);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setLocationRelativeTo(null);
+        setResizable(true);
 
-        // Main panel
-        JPanel mainPanel = new JPanel(new BorderLayout());
-        mainPanel.setBackground(new Color(245, 245, 250));
+        // Main panel with subtle background
+        JPanel mainPanel = new JPanel(new BorderLayout()) {
+            @Override
+            protected void paintComponent(Graphics g) {
+                super.paintComponent(g);
+                Graphics2D g2d = (Graphics2D) g;
+                g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+                g2d.setColor(new Color(248, 249, 250));
+                g2d.fillRect(0, 0, getWidth(), getHeight());
+            }
+        };
 
-        // Header panel
+        // Modern header with admin-specific colors
         JPanel headerPanel = new JPanel() {
             @Override
             protected void paintComponent(Graphics g) {
                 super.paintComponent(g);
                 Graphics2D g2d = (Graphics2D) g;
+                g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
 
-                // Create gradient background
+                // Professional admin gradient
                 GradientPaint gradient = new GradientPaint(
-                        0, 0, Color.ORANGE,
-                        getWidth(), 0, new Color(255,72,0)
+                        0, 0, new Color(220, 53, 69),
+                        getWidth(), 0, new Color(153, 0, 51)
                 );
                 g2d.setPaint(gradient);
                 g2d.fillRect(0, 0, getWidth(), getHeight());
             }
         };
-
         headerPanel.setLayout(new BorderLayout());
-        headerPanel.setPreferredSize(new Dimension(getWidth(), 60));
+        headerPanel.setPreferredSize(new Dimension(getWidth(), 80));
 
-        JLabel welcomeLabel = new JLabel("Welcome, Admin!");
-        welcomeLabel.setFont(new Font("Arial", Font.BOLD, 18));
+        // Welcome label with admin styling
+        JLabel welcomeLabel = new JLabel("Admin Dashboard");
+        welcomeLabel.setFont(new Font("Segoe UI", Font.BOLD, 24));
         welcomeLabel.setForeground(Color.WHITE);
-        welcomeLabel.setBorder(BorderFactory.createEmptyBorder(0, 20, 0, 0));
+        welcomeLabel.setBorder(BorderFactory.createEmptyBorder(0, 30, 0, 0));
         headerPanel.add(welcomeLabel, BorderLayout.WEST);
 
-        JButton logoutButton = new JButton("Logout");
-        logoutButton.setFont(new Font("Arial", Font.BOLD, 14));
-        logoutButton.setForeground(new Color(70, 130, 180));
-        logoutButton.setBackground(Color.WHITE);
-        logoutButton.setFocusPainted(false);
-        logoutButton.setBorder(BorderFactory.createEmptyBorder(5, 15, 5, 15));
-        logoutButton.setCursor(new Cursor(Cursor.HAND_CURSOR));
+        // Logout button with modern style
+        JButton logoutButton = createStyledButton("Logout", new Color(255, 255, 255, 180));
+        logoutButton.setForeground(new Color(153, 0, 51));
+        logoutButton.setFont(new Font("Segoe UI", Font.BOLD, 14));
 
-        JPanel buttonPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT));
+        JPanel buttonPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT, 20, 0));
         buttonPanel.setOpaque(false);
         buttonPanel.add(logoutButton);
         headerPanel.add(buttonPanel, BorderLayout.EAST);
 
-        // Content panel
-        JPanel contentPanel = new JPanel(new BorderLayout());
-        contentPanel.setBackground(new Color(245, 245, 250));
-        contentPanel.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
+        // Content panel with card layout
+        JPanel contentPanel = new JPanel(new BorderLayout(20, 20));
+        contentPanel.setBorder(BorderFactory.createEmptyBorder(20, 20, 20, 20));
+        contentPanel.setOpaque(false);
 
-        // Action panel
-        JPanel actionPanel = new JPanel(new BorderLayout());
-        actionPanel.setBackground(new Color(245, 245, 250));
-        actionPanel.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
-        actionPanel.setLayout(new BoxLayout(actionPanel, BoxLayout.PAGE_AXIS));
+        // Sidebar panel with admin actions
+        JPanel sidebarPanel = createRoundedPanel(15, new Color(255, 255, 255));
+        sidebarPanel.setLayout(new BoxLayout(sidebarPanel, BoxLayout.Y_AXIS));
+        sidebarPanel.setBorder(BorderFactory.createEmptyBorder(20, 20, 20, 20));
+        sidebarPanel.setPreferredSize(new Dimension(250, getHeight()));
 
-        JPanel matchPanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
-        matchPanel.setOpaque(false);
-        matchPanel.setBackground(new Color(245, 245, 250));
-        matchPanel.setBorder(BorderFactory.createEtchedBorder());
+        // Admin action buttons
+        JButton addNewMatchButton = createStyledButton("Add New Match", new Color(220, 53, 69));
+        addNewMatchButton.setAlignmentX(Component.CENTER_ALIGNMENT);
+        sidebarPanel.add(addNewMatchButton);
+        sidebarPanel.add(Box.createRigidArea(new Dimension(0, 15)));
 
-        JLabel matchList = new JLabel("Upcoming matches: ");
-        matchList.setFont(new Font("Arial", Font.BOLD, 14));
-        matchList.setBackground(Color.WHITE);
-        matchList.setForeground(new Color(70, 130, 180));
-        matchList.setBorder(BorderFactory.createEmptyBorder(5, 15, 5, 15));
-        matchPanel.add(matchList, BorderLayout.NORTH);
+        // Quick stats panel
+        JPanel statsPanel = createRoundedPanel(15, new Color(248, 249, 250));
+        statsPanel.setLayout(new BoxLayout(statsPanel, BoxLayout.Y_AXIS));
+        statsPanel.setBorder(BorderFactory.createEmptyBorder(15, 15, 15, 15));
+        statsPanel.setAlignmentX(Component.CENTER_ALIGNMENT);
 
-        JButton addNewMatchButton = new JButton("Add new match");
-        addNewMatchButton.setFont(new Font("Arial", Font.BOLD, 14));
-        addNewMatchButton.setForeground(Color.WHITE);
-        addNewMatchButton.setBackground(Color.orange);
-        addNewMatchButton.setFocusPainted(false);
-        addNewMatchButton.setBorder(BorderFactory.createEmptyBorder(5, 15, 5, 15));
-        addNewMatchButton.setCursor(new Cursor(Cursor.HAND_CURSOR));
-        actionPanel.add(addNewMatchButton);
+        JLabel statsTitle = new JLabel("Quick Stats");
+        statsTitle.setFont(new Font("Segoe UI", Font.BOLD, 16));
+        statsTitle.setForeground(new Color(73, 80, 87));
+        statsTitle.setAlignmentX(Component.CENTER_ALIGNMENT);
+        statsPanel.add(statsTitle);
+        statsPanel.add(Box.createRigidArea(new Dimension(0, 10)));
 
-        JButton globalStatsButton = new JButton("View statistics");
-        globalStatsButton.setFont(new Font("Arial", Font.BOLD, 14));
-        globalStatsButton.setForeground(Color.WHITE);
-        globalStatsButton.setBackground(Color.orange);
-        globalStatsButton.setFocusPainted(false);
-        globalStatsButton.setBorder(BorderFactory.createEmptyBorder(5, 15, 5, 15));
-        globalStatsButton.setCursor(new Cursor(Cursor.HAND_CURSOR));
-        actionPanel.add(globalStatsButton);
+        // Add some sample stats (would be populated with real data)
+        addStatItem(statsPanel, "Total Matches", String.valueOf(getMatchCount()));
+        addStatItem(statsPanel, "Tickets Sold", String.valueOf(ticketsSold()));
+        addStatItem(statsPanel, "Revenue", String.valueOf(getRevenue()));
 
-        JPanel matchItemsPanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
-        matchItemsPanel.setLayout(new BoxLayout(matchItemsPanel, BoxLayout.PAGE_AXIS));
+        sidebarPanel.add(statsPanel);
 
-        JPanel matchHeaderPanel = new JPanel();
-        matchHeaderPanel.setLayout(new BoxLayout(matchHeaderPanel, BoxLayout.X_AXIS));
-        matchHeaderPanel.setBackground(new Color(245, 245, 250));
-        matchHeaderPanel.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
-        matchHeaderPanel.setOpaque(false);
-        matchHeaderPanel.setAlignmentX(Component.LEFT_ALIGNMENT);
+        // Main content area - matches list
+        JPanel matchesPanel = new JPanel(new BorderLayout());
+        matchesPanel.setOpaque(false);
 
-        JLabel teamOneHeader = new JLabel("Home team");
-        teamOneHeader.setFont(new Font("Arial", Font.BOLD, 14));
-        teamOneHeader.setForeground(new Color(70, 130, 180));
-        teamOneHeader.setBorder(BorderFactory.createEmptyBorder(5, 15, 5, 15));
-        matchHeaderPanel.add(teamOneHeader);
+        JLabel matchesTitle = new JLabel("Manage Matches");
+        matchesTitle.setFont(new Font("Segoe UI", Font.BOLD, 20));
+        matchesTitle.setForeground(new Color(73, 80, 87));
+        matchesTitle.setBorder(BorderFactory.createEmptyBorder(0, 0, 15, 0));
+        matchesPanel.add(matchesTitle, BorderLayout.NORTH);
 
-        JLabel teamTwoHeader = new JLabel("Away team");
-        teamTwoHeader.setFont(new Font("Arial", Font.BOLD, 14));
-        teamTwoHeader.setForeground(new Color(70, 130, 180));
-        teamTwoHeader.setBorder(BorderFactory.createEmptyBorder(5, 15, 5, 15));
-        matchHeaderPanel.add(teamTwoHeader);
+        JPanel matchesListPanel = new JPanel();
+        matchesListPanel.setLayout(new BoxLayout(matchesListPanel, BoxLayout.Y_AXIS));
+        matchesListPanel.setOpaque(false);
 
-        JLabel dateHeader = new JLabel("Date");
-        dateHeader.setFont(new Font("Arial", Font.BOLD, 14));
-        dateHeader.setForeground(new Color(70, 130, 180));
-        dateHeader.setBorder(BorderFactory.createEmptyBorder(5, 15, 5, 15));
-        matchHeaderPanel.add(dateHeader);
+        // Match table header
+        JPanel matchHeader = createRoundedPanel(10, new Color(73, 80, 87));
+        matchHeader.setLayout(new GridLayout(1, 9, 10, 0));
+        matchHeader.setBorder(BorderFactory.createEmptyBorder(10, 15, 10, 15));
+        matchHeader.setMaximumSize(new Dimension(Integer.MAX_VALUE, 50));
 
-        JLabel timeHeader = new JLabel("Time");
-        timeHeader.setFont(new Font("Arial", Font.BOLD, 14));
-        timeHeader.setForeground(new Color(70, 130, 180));
-        timeHeader.setBorder(BorderFactory.createEmptyBorder(5, 15, 5, 15));
-        matchHeaderPanel.add(timeHeader);
-
-        JLabel placeHeader = new JLabel("Place");
-        placeHeader.setFont(new Font("Arial", Font.BOLD, 14));
-        placeHeader.setForeground(new Color(70, 130, 180));
-        placeHeader.setBorder(BorderFactory.createEmptyBorder(5, 15, 5, 15));
-        matchHeaderPanel.add(placeHeader);
-
-        JLabel capacityHeader = new JLabel("Capacity");
-        capacityHeader.setFont(new Font("Arial", Font.BOLD, 14));
-        capacityHeader.setForeground(new Color(70, 130, 180));
-        capacityHeader.setBorder(BorderFactory.createEmptyBorder(5, 15, 5, 15));
-        matchHeaderPanel.add(capacityHeader);
-
-        matchItemsPanel.add(matchHeaderPanel);
-
-        try {
-            assert matchDAO != null;
-            List<Match> matchesList = matchDAO.getAll();
-            for (Match match : matchesList) {
-                JPanel matchItemPanel = new JPanel();
-                matchItemPanel.setLayout(new BoxLayout(matchItemPanel, BoxLayout.X_AXIS));
-                matchItemPanel.setBackground(new Color(245, 245, 250));
-                matchItemPanel.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
-                matchItemPanel.setOpaque(false);
-                matchItemPanel.setAlignmentX(Component.LEFT_ALIGNMENT);
-
-                JLabel team1 = new JLabel(match.getTeam1());
-                team1.setFont(new Font("Arial", Font.BOLD, 14));
-                team1.setForeground(new Color(70, 130, 180));
-                team1.setBorder(BorderFactory.createEmptyBorder(5, 15, 5, 15));
-                matchItemPanel.add(team1);
-
-                JLabel team2 = new JLabel(match.getTeam2());
-                team2.setFont(new Font("Arial", Font.BOLD, 14));
-                team2.setForeground(new Color(70, 130, 180));
-                team2.setBorder(BorderFactory.createEmptyBorder(5, 15, 5, 15));
-                matchItemPanel.add(team2);
-
-                JLabel date = new JLabel(match.getMatchDate().toString());
-                date.setFont(new Font("Arial", Font.BOLD, 14));
-                date.setForeground(new Color(70, 130, 180));
-                date.setBorder(BorderFactory.createEmptyBorder(5, 15, 5, 15));
-                matchItemPanel.add(date);
-
-                JLabel time = new JLabel(match.getMatchTime().toString());
-                time.setFont(new Font("Arial", Font.BOLD, 14));
-                time.setForeground(new Color(70, 130, 180));
-                time.setBorder(BorderFactory.createEmptyBorder(5, 15, 5, 15));
-                matchItemPanel.add(time);
-
-                JLabel place = new JLabel(match.getLocation());
-                place.setFont(new Font("Arial", Font.BOLD, 14));
-                place.setForeground(new Color(70, 130, 180));
-                place.setBorder(BorderFactory.createEmptyBorder(5, 15, 5, 15));
-                matchItemPanel.add(place);
-
-                JLabel capacity = new JLabel(Integer.toString(match.getStadiumCap()));
-                capacity.setFont(new Font("Arial", Font.BOLD, 14));
-                capacity.setForeground(new Color(70, 130, 180));
-                capacity.setBorder(BorderFactory.createEmptyBorder(5, 15, 5, 15));
-                matchItemPanel.add(capacity);
-
-                JButton editButton = new JButton("Edit");
-                editButton.setFont(new Font("Arial", Font.BOLD, 14));
-                editButton.setForeground(Color.WHITE);
-                editButton.setBackground(Color.orange);
-                editButton.setBorder(BorderFactory.createEmptyBorder(5, 15, 5, 15));
-                matchItemPanel.add(editButton, BorderLayout.EAST);
-
-                JButton viewStatsButton = new JButton("Statistics");
-                viewStatsButton.setFont(new Font("Arial", Font.BOLD, 14));
-                viewStatsButton.setForeground(Color.WHITE);
-                viewStatsButton.setBackground(Color.orange);
-                viewStatsButton.setBorder(BorderFactory.createEmptyBorder(5, 15, 5, 15));
-                viewStatsButton.setAlignmentX(Component.CENTER_ALIGNMENT);
-                matchItemPanel.add(viewStatsButton);
-
-                JButton deleteMatchButton = new JButton("Delete");
-                deleteMatchButton.setFont(new Font("Arial", Font.BOLD, 14));
-                deleteMatchButton.setForeground(Color.WHITE);
-                deleteMatchButton.setBackground(Color.orange);
-                deleteMatchButton.setBorder(BorderFactory.createEmptyBorder(5, 15, 5, 15));
-                deleteMatchButton.setAlignmentX(Component.CENTER_ALIGNMENT);
-                matchItemPanel.add(deleteMatchButton);
-
-                editButton.addActionListener(new ActionListener() {
-                    @Override
-                    public void actionPerformed(ActionEvent e) {
-                        EditMatchFrame editMatchFrame = new EditMatchFrame(match, AdminFrame.this);
-                        editMatchFrame.setVisible(true);
-                    }
-                });
-
-                viewStatsButton.addActionListener(new ActionListener() {
-                    @Override
-                    public void actionPerformed(ActionEvent e) {
-                        MatchStatsFrame matchStatsFrame = new MatchStatsFrame(match);
-                        matchStatsFrame.setVisible(true);
-                    }
-                });
-
-                deleteMatchButton.addActionListener(new ActionListener() {
-                    @Override
-                    public void actionPerformed(ActionEvent e) {
-                        matchItemsPanel.remove(matchItemPanel);
-                        matchDAO.delete(match);
-                        revalidate();
-                        repaint();
-                    }
-                });
-
-                matchItemsPanel.add(matchItemPanel);
-            }
-        } catch (SQLException | NullPointerException e) {
-            throw new RuntimeException(e);
+        String[] headers = {"Home Team", "Away Team", "Date", "Time", "Venue", "Capacity", "Edit", "Stats", "Action"};
+        for (String header : headers) {
+            JLabel headerLabel = new JLabel(header, SwingConstants.CENTER);
+            headerLabel.setFont(new Font("Segoe UI", Font.BOLD, 14));
+            headerLabel.setForeground(Color.WHITE);
+            matchHeader.add(headerLabel);
         }
 
-        JPanel matchItem = new JPanel();
-        matchItem.setLayout(new BoxLayout(matchItem, BoxLayout.Y_AXIS));
-        matchItem.setBackground(new Color(245, 245, 250));
-        matchItem.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
-        matchItemsPanel.add(matchItem);
+        matchesListPanel.add(matchHeader);
+        matchesListPanel.add(Box.createRigidArea(new Dimension(0, 10)));
 
-        JScrollPane matchPanelScrollPane = new JScrollPane(matchItemsPanel);
-        matchPanelScrollPane.setOpaque(false);
-        matchPanelScrollPane.setBackground(new Color(245, 245, 250));
-        matchPanelScrollPane.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
-        matchPanelScrollPane.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
-        matchPanel.add(matchPanelScrollPane, BorderLayout.CENTER);
+        try {
+            List<Match> matchesList = matchDAO.getAll();
+            for (Match match : matchesList) {
+                JPanel matchItem = createRoundedPanel(10, Color.WHITE);
+                matchItem.setLayout(new GridLayout(1, 9, 10, 0));
+                matchItem.setBorder(BorderFactory.createEmptyBorder(10, 15, 10, 15));
+                matchItem.setMaximumSize(new Dimension(Integer.MAX_VALUE, 60));
 
-        contentPanel.add(matchPanel, BorderLayout.CENTER);
-        contentPanel.add(actionPanel, BorderLayout.WEST);
+                // Match details
+                matchItem.add(createMatchLabel(match.getTeam1(), Font.BOLD));
+                matchItem.add(createMatchLabel(match.getTeam2(), Font.BOLD));
+                matchItem.add(createMatchLabel(match.getMatchDate().toString(), Font.PLAIN));
+                matchItem.add(createMatchLabel(match.getMatchTime().toString(), Font.PLAIN));
+                matchItem.add(createMatchLabel(match.getLocation(), Font.PLAIN));
+                matchItem.add(createMatchLabel(Integer.toString(match.getStadiumCap()), Font.PLAIN));
 
-        // Add panels to main panel
+                // Action buttons
+                JButton editButton = createSmallButton("Edit", new Color(13, 110, 253));
+                editButton.addActionListener(e -> {
+                    EditMatchFrame editMatchFrame = new EditMatchFrame(match, AdminFrame.this);
+                    editMatchFrame.setVisible(true);
+                });
+                matchItem.add(editButton);
+
+                JButton statsButton = createSmallButton("Stats", new Color(108, 117, 125));
+                statsButton.addActionListener(e -> {
+                    MatchStatsFrame matchStatsFrame = new MatchStatsFrame(match);
+                    matchStatsFrame.setVisible(true);
+                });
+                matchItem.add(statsButton);
+
+                JButton deleteButton = createSmallButton("Delete", new Color(220, 53, 69));
+                deleteButton.addActionListener(e -> {
+                    int confirm = JOptionPane.showConfirmDialog(
+                            AdminFrame.this,
+                            "Are you sure you want to delete this match?",
+                            "Confirm Delete",
+                            JOptionPane.YES_NO_OPTION
+                    );
+                    if (confirm == JOptionPane.YES_OPTION) {
+                        try {
+                            matchDAO.delete(match);
+                            matchesListPanel.remove(matchItem);
+                            matchesListPanel.revalidate();
+                            matchesListPanel.repaint();
+                            JOptionPane.showMessageDialog(
+                                    AdminFrame.this,
+                                    "Match deleted successfully",
+                                    "Success",
+                                    JOptionPane.INFORMATION_MESSAGE
+                            );
+                        } catch (Exception ex) {
+                            JOptionPane.showMessageDialog(
+                                    AdminFrame.this,
+                                    "Error deleting match: " + ex.getMessage(),
+                                    "Error",
+                                    JOptionPane.ERROR_MESSAGE
+                            );
+                        }
+                    }
+                });
+                matchItem.add(deleteButton);
+
+                matchesListPanel.add(matchItem);
+                matchesListPanel.add(Box.createRigidArea(new Dimension(0, 10)));
+            }
+        } catch (SQLException | NullPointerException e) {
+            JOptionPane.showMessageDialog(this,
+                    "Error loading matches: " + e.getMessage(),
+                    "Error",
+                    JOptionPane.ERROR_MESSAGE
+            );
+        }
+
+        JScrollPane scrollPane = new JScrollPane(matchesListPanel);
+        scrollPane.setBorder(BorderFactory.createEmptyBorder());
+        scrollPane.setOpaque(false);
+        scrollPane.getViewport().setOpaque(false);
+        scrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
+
+        matchesPanel.add(scrollPane, BorderLayout.CENTER);
+
+        contentPanel.add(sidebarPanel, BorderLayout.WEST);
+        contentPanel.add(matchesPanel, BorderLayout.CENTER);
+
         mainPanel.add(headerPanel, BorderLayout.NORTH);
         mainPanel.add(contentPanel, BorderLayout.CENTER);
 
-        // Add main panel to frame
         add(mainPanel);
 
-        // Add action listeners
-        logoutButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                LoginFrame loginFrame = new LoginFrame();
-                loginFrame.setVisible(true);
-                dispose();
-            }
+        // Action listeners
+        logoutButton.addActionListener(e -> {
+            LoginFrame loginFrame = new LoginFrame();
+            loginFrame.setVisible(true);
+            dispose();
         });
 
-        addNewMatchButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                NewMatchFrame newMatchFrame = new NewMatchFrame(AdminFrame.this);
-                newMatchFrame.setVisible(true);
-            }
+        addNewMatchButton.addActionListener(e -> {
+            NewMatchFrame newMatchFrame = new NewMatchFrame(AdminFrame.this);
+            newMatchFrame.setVisible(true);
         });
 
-        globalStatsButton.addActionListener(new ActionListener() {
+    }
+
+    // Helper methods
+    private JButton createStyledButton(String text, Color bgColor) {
+        JButton button = new JButton(text);
+        button.setFont(new Font("Segoe UI", Font.BOLD, 14));
+        button.setForeground(Color.WHITE);
+        button.setBackground(bgColor);
+        button.setFocusPainted(false);
+        button.setBorder(BorderFactory.createCompoundBorder(
+                BorderFactory.createLineBorder(bgColor.darker(), 1),
+                BorderFactory.createEmptyBorder(8, 20, 8, 20)
+        ));
+        button.setCursor(new Cursor(Cursor.HAND_CURSOR));
+        return button;
+    }
+
+    private JButton createSmallButton(String text, Color bgColor) {
+        JButton button = new JButton(text);
+        button.setFont(new Font("Segoe UI", Font.BOLD, 12));
+        button.setForeground(Color.WHITE);
+        button.setBackground(bgColor);
+        button.setFocusPainted(false);
+        button.setBorder(BorderFactory.createEmptyBorder(5, 10, 5, 10));
+        button.setCursor(new Cursor(Cursor.HAND_CURSOR));
+        return button;
+    }
+
+    private JPanel createRoundedPanel(int radius, Color bgColor) {
+        return new JPanel() {
             @Override
-            public void actionPerformed(ActionEvent e) {
-                StatsFrame statsFrame = new StatsFrame();
-                statsFrame.setVisible(true);
+            protected void paintComponent(Graphics g) {
+                super.paintComponent(g);
+                Graphics2D g2d = (Graphics2D) g;
+                g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+                g2d.setColor(bgColor);
+                g2d.fillRoundRect(0, 0, getWidth(), getHeight(), radius, radius);
             }
-        });
+        };
+    }
+
+    private JLabel createMatchLabel(String text, int fontStyle) {
+        JLabel label = new JLabel(text, SwingConstants.CENTER);
+        label.setFont(new Font("Segoe UI", fontStyle, 14));
+        label.setForeground(new Color(33, 37, 41));
+        return label;
+    }
+
+    private void addStatItem(JPanel panel, String title, String value) {
+        JPanel statItem = new JPanel(new BorderLayout());
+        statItem.setOpaque(false);
+
+        JLabel titleLabel = new JLabel(title);
+        titleLabel.setFont(new Font("Segoe UI", Font.PLAIN, 12));
+        titleLabel.setForeground(new Color(108, 117, 125));
+
+        JLabel valueLabel = new JLabel(value);
+        valueLabel.setFont(new Font("Segoe UI", Font.BOLD, 14));
+        valueLabel.setForeground(new Color(33, 37, 41));
+
+        statItem.add(titleLabel, BorderLayout.NORTH);
+        statItem.add(valueLabel, BorderLayout.SOUTH);
+        statItem.setBorder(BorderFactory.createEmptyBorder(5, 0, 5, 0));
+
+        panel.add(statItem);
+        panel.add(Box.createRigidArea(new Dimension(0, 5)));
     }
 
     public static void main(String[] args) {
-        UIManager.put("Button.arc", 999);
+        SwingUtilities.invokeLater(() -> {
+            try {
+                UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
 
-        AdminFrame adminFrame = new AdminFrame(new Utilisateur());
-        adminFrame.setVisible(true);
+            AdminFrame adminFrame = new AdminFrame(new Utilisateur());
+            adminFrame.setVisible(true);
+        });
+    }
+
+    public double getRevenue() {
+        try {
+            double revenue = 0;
+            List<Ticket> tickets = ticketDAO.getAll();
+            for (Ticket ticket : tickets) {
+                revenue += ticket.getPrice();
+            }
+            return revenue;
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return 0;
+    }
+
+    public int getMatchCount() {
+        try {
+            return matchDAO.getAll().size();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return 0;
+    }
+
+    public int ticketsSold() {
+        try {
+            return ticketDAO.getAll().size();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return 0;
     }
 }

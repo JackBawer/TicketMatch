@@ -2,6 +2,8 @@
 <project version="4">
   <component name="SqlDialectMappings">
     <file url="file://$PROJECT_DIR$/src/model/MatchDAOImpl.java" dialect="PostgreSQL" />
+    <file url="file://$PROJECT_DIR$/src/model/TicketDAOImpl.java" dialect="PostgreSQL" />
     <file url="file://$PROJECT_DIR$/src/model/UtilisateurDAOImpl.java" dialect="PostgreSQL" />
+    <file url="file://$PROJECT_DIR$/src/view/TicketsFrame.java" dialect="PostgreSQL" />
   </component>
 </project>

@@ -18,7 +18,7 @@ public class Ticket {
         this.matchID = null;
         this.price = price;
         this.stock = stock;
-        this.status = ticketStatus.AVAILABLE;
+        this.status = status;
     }
 
     public Integer getSerialNum() {
