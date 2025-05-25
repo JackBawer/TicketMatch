@@ -3,6 +3,7 @@ package view;
 import model.Utilisateur;
 
 import javax.swing.*;
+
 import javax.swing.text.NumberFormatter;
 import java.awt.*;
 import java.awt.event.ActionEvent;
@@ -128,8 +129,8 @@ public class FundFrame extends JFrame {
         cancelButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                MainFrame mainFrame = new MainFrame(user);
-                mainFrame.setVisible(true);
+                LoginFrame loginFrame = new LoginFrame();
+                loginFrame.setVisible(true);
                 dispose();
             }
         });

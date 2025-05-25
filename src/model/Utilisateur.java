@@ -31,7 +31,7 @@ public class Utilisateur {
         this.nom = nom;
         this.email = email;
         this.motDePasse = motDePasse;
-        this.role = userRole.USER;
+        this.role = role;
         this.balance = balance;
     }
 

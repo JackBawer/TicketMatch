@@ -162,6 +162,8 @@ public class LoginFrame extends JFrame {
                 try {
 
                     Utilisateur user = userDAO.authenticate(email, password);
+                    Utilisateur admin = userDAO.authenticate(email, password);
+                    admin.setRole(Utilisateur.userRole.ADMIN);
 
                     if (user != null) {
                         if (Utilisateur.userRole.ADMIN.equals(user.getRole())) {

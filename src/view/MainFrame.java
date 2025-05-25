@@ -1,6 +1,5 @@
 package view;
 
-import com.formdev.flatlaf.FlatLightLaf;
 import model.*;
 
 import javax.swing.*;
@@ -297,8 +296,6 @@ public class MainFrame extends JFrame {
     }
 
     public static void main(String[] args) {
-        FlatLightLaf.setup();
-
         MainFrame mainFrame = new MainFrame(new Utilisateur());
         mainFrame.setVisible(true);
     }

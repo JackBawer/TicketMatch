@@ -1,6 +1,5 @@
 package view;
 
-import com.formdev.flatlaf.FlatLightLaf;
 import model.*;
 
 import javax.swing.*;
@@ -311,7 +310,6 @@ public class AdminFrame extends JFrame {
     }
 
     public static void main(String[] args) {
-        FlatLightLaf.setup();
         UIManager.put("Button.arc", 999);
 
         AdminFrame adminFrame = new AdminFrame(new Utilisateur());

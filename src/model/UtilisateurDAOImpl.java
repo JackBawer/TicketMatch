@@ -135,7 +135,6 @@ public class UtilisateurDAOImpl implements UtilisateurDAO {
         }
     }
 
-    // Authentification
     public Utilisateur authenticate(String email, String password) throws SQLException {
         String sql = "SELECT id_utilisateur, nom, email, mot_de_passe, role, balance FROM utilisateur WHERE email = ?";
         try (Connection con = DatabaseConnection.getConnection();
@@ -144,17 +143,35 @@ public class UtilisateurDAOImpl implements UtilisateurDAO {
             ps.setString(1, email);
 
             try (ResultSet rs = ps.executeQuery()) {
-                if (rs.next()) { //password hashing isn't working as intended
+                if (rs.next()) {
                     String storedPassword = rs.getString("mot_de_passe");
-                    if (storedPassword.equals(password)) {
-                        return new Utilisateur(
+                    if (storedPassword.equals(password)) { // Plaintext comparison (adjust if hashing later)
+
+                        String role = rs.getString("role");
+                        System.out.println("Raw role from DB: " + role); // ✅ Debug line
+
+                        Utilisateur.userRole userRole = Utilisateur.userRole.USER; // Default fallback
+
+                        if (role != null) {
+                            try {
+                                userRole = Utilisateur.userRole.valueOf(role.toUpperCase());
+                            } catch (IllegalArgumentException e) {
+                                System.err.println("Invalid role in database: " + role + ", defaulting to USER");
+                            }
+                        }
+
+                        Utilisateur user = new Utilisateur(
                                 rs.getInt("id_utilisateur"),
                                 rs.getString("nom"),
                                 rs.getString("email"),
                                 storedPassword,
-                                Utilisateur.userRole.valueOf(rs.getString("role")),
+                                userRole,
                                 rs.getInt("balance")
                         );
+
+                        System.out.println("Constructed user with role: " + user.getRole()); // ✅ Verify final result
+
+                        return user;
                     }
                 }
             }
