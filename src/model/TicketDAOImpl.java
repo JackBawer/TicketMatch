@@ -23,7 +23,8 @@ public class TicketDAOImpl implements TicketDAO {
                     rs.getInt("id_match"),
                     rs.getInt("prix"),
                     rs.getInt("stock"),
-                    Ticket.ticketStatus.valueOf(rs.getString("statut"))
+                    Ticket.ticketStatus.valueOf(rs.getString("statut")),
+                    rs.getString("seat")
             );
         }
         return null;
@@ -42,7 +43,8 @@ public class TicketDAOImpl implements TicketDAO {
                     rs.getInt("id_match"),
                     rs.getInt("prix"),
                     rs.getInt("stock"),
-                    Ticket.ticketStatus.valueOf(rs.getString("statut"))
+                    Ticket.ticketStatus.valueOf(rs.getString("statut")),
+                    rs.getString("seat")
             ));
         }
         return List.of();
@@ -59,7 +61,7 @@ public class TicketDAOImpl implements TicketDAO {
 
     @Override
     public int insert(Ticket ticket) throws SQLException {
-        String sql = "INSERT INTO ticket (id_ticket, id_utilisateur, id_match, prix, stock, statut) VALUES (?,?,?,?,?,?)";
+        String sql = "INSERT INTO ticket (id_ticket, id_utilisateur, id_match, prix, stock, statut, seat) VALUES (?,?,?,?,?,?,?)";
         Connection conn = DatabaseConnection.getConnection();
         PreparedStatement ps = conn.prepareStatement(sql, PreparedStatement.RETURN_GENERATED_KEYS);
         ps.setInt(1, ticket.getSerialNum());
@@ -68,6 +70,7 @@ public class TicketDAOImpl implements TicketDAO {
         ps.setDouble(4, ticket.getPrice());
         ps.setInt(5, ticket.getStock());
         ps.setString(6, ticket.getStatus().name());
+        ps.setString(7, ticket.getSeat());
 
         int affectedRows = ps.executeUpdate();
         if (affectedRows > 0) {
@@ -107,25 +110,23 @@ public class TicketDAOImpl implements TicketDAO {
         return 0;
     }
 
-    public List<Ticket> findAvailableTickets(int matchId) throws SQLException {
-    List<Ticket> tickets = new ArrayList<>();
-    String sql = "SELECT * FROM ticket WHERE id_match = ? AND statut = 'disponible'";
-    Connection conn = DatabaseConnection.getConnection();
-    PreparedStatement ps = conn.prepareStatement(sql);
-    ps.setInt(1, matchId);
-    ResultSet rs = ps.executeQuery();
-
-    while (rs.next()) {
-        Ticket t = new Ticket(
-            rs.getInt("id_ticket"),
-            rs.getInt("id_utilisateur"),
-            rs.getInt("id_match"),
-            rs.getDouble("prix"),
-            rs.getInt("numero_place"),
-            Ticket.ticketStatus.valueOf(rs.getString("statut"))
-        );
-        tickets.add(t);
+    public List<Ticket> getUserTickets(int id) throws SQLException {
+        String sql = "SELECT * FROM ticket WHERE id_utilisateur = ?";
+        Connection conn = DatabaseConnection.getConnection();
+        PreparedStatement ps = conn.prepareStatement(sql);
+        ps.setInt(1, id);
+        ResultSet rs = ps.executeQuery();
+        if (rs.next()) {
+            return List.of(new Ticket(
+                    rs.getInt("id_ticket"),
+                    rs.getInt("id_utilisateur"),
+                    rs.getInt("id_match"),
+                    rs.getInt("prix"),
+                    rs.getInt("stock"),
+                    Ticket.ticketStatus.valueOf(rs.getString("statut")),
+                    rs.getString("seat")
+            ));
+        }
+        return List.of();
     }
-    return tickets;
- }
 }

@@ -104,11 +104,6 @@ public class MainFrame extends JFrame {
         sidebarPanel.add(userCard);
         sidebarPanel.add(Box.createRigidArea(new Dimension(0, 20)));
 
-        JButton historyButton = createStyledButton("Purchase History", new Color(0, 119, 182));
-        historyButton.setAlignmentX(Component.CENTER_ALIGNMENT);
-        sidebarPanel.add(historyButton);
-        sidebarPanel.add(Box.createRigidArea(new Dimension(0, 15)));
-
         JButton myTicketsButton = createStyledButton("My Tickets", new Color(0, 119, 182));
         myTicketsButton.setAlignmentX(Component.CENTER_ALIGNMENT);
         sidebarPanel.add(myTicketsButton);

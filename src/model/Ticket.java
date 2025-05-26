@@ -7,18 +7,20 @@ public class Ticket {
     private double price;
     private int stock;
     private ticketStatus status;
+    private String seat;
 
     public enum ticketStatus {
         AVAILABLE, SOLD_OUT
     }
 
-    public Ticket(Integer serialNum, Integer owner, Integer matchID, double price, int stock, ticketStatus status) {
+    public Ticket(Integer serialNum, Integer owner, Integer matchID, double price, int stock, ticketStatus status, String seat) {
         this.serialNum = serialNum;
-        this.owner = null;
-        this.matchID = null;
+        this.owner = owner;
+        this.matchID = matchID;
         this.price = price;
         this.stock = stock;
         this.status = status;
+        this.seat = seat;
     }
 
     public Integer getSerialNum() {
@@ -67,5 +69,13 @@ public class Ticket {
 
     public void setStatus(ticketStatus status) {
         this.status = status;
+    }
+
+    public String getSeat() {
+        return seat;
+    }
+
+    public void setSeat(String seat) {
+        this.seat = seat;
     }
 }
