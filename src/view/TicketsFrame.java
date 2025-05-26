@@ -1,31 +1,31 @@
 package view;
 
-import model.DatabaseConnection;
-import model.Utilisateur;
+import model.*;
 
 import javax.swing.*;
-import javax.swing.table.DefaultTableModel;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.Vector;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class TicketsFrame extends JFrame {
     Utilisateur user;
+    TicketDAOImpl ticketDAO;
+    MatchDAOImpl matchDAO;
 
     public TicketsFrame(Utilisateur user) {
         this.user = user;
+        ticketDAO = new TicketDAOImpl();
+        matchDAO = new MatchDAOImpl();
         initializeUI();
     }
 
     private void initializeUI() {
         setTitle("My Tickets - " + user.getNom());
         setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-        setBounds(100, 100, 450, 300);
         setLocationRelativeTo(null);
         setResizable(false);
 
@@ -75,23 +75,76 @@ public class TicketsFrame extends JFrame {
         contentPanel.setLayout(new BoxLayout(contentPanel, BoxLayout.PAGE_AXIS));
         contentPanel.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
 
-        JTable purchaseHistoryTable = new JTable();
-        purchaseHistoryTable.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
-        purchaseHistoryTable.setAutoCreateRowSorter(true);
-        purchaseHistoryTable.getTableHeader().setReorderingAllowed(false);
-        purchaseHistoryTable.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+        JPanel ticketsListPanel = new JPanel();
+        ticketsListPanel.setLayout(new BoxLayout(ticketsListPanel, BoxLayout.Y_AXIS));
+        ticketsListPanel.setOpaque(false);
+
+        JPanel ticketHeader = createRoundedPanel(10, new Color(0, 119, 182));
+        ticketHeader.setLayout(new GridLayout(1, 7, 10, 0));
+        ticketHeader.setBorder(BorderFactory.createEmptyBorder(10, 15, 10, 15));
+        ticketHeader.setMaximumSize(new Dimension(Integer.MAX_VALUE, 50));
+
+        String[] headers = {"Ticket ID", "Owner ID", "Match ID", "Date", "Time", "Venue", "Seat", ""};
+        for (String header : headers) {
+            JLabel headerLabel = new JLabel(header, SwingConstants.CENTER);
+            headerLabel.setFont(new Font("Segoe UI", Font.BOLD, 14));
+            headerLabel.setForeground(Color.WHITE);
+            ticketHeader.add(headerLabel);
+        }
+
+        ticketsListPanel.add(ticketHeader);
+        ticketsListPanel.add(Box.createRigidArea(new Dimension(0, 10)));
 
         try {
-            fillTable((DefaultTableModel)purchaseHistoryTable.getModel());
+            List<Ticket> userTickets = ticketDAO.getUserTickets(user.getIdUtilisateur());
+
+            for (Ticket ticket : userTickets) {
+                JPanel ticketItem = createRoundedPanel(10, Color.WHITE);
+                ticketItem.setLayout(new GridLayout(1, 7, 10, 0));
+                ticketItem.setBorder(BorderFactory.createEmptyBorder(10, 15, 10, 15));
+                ticketItem.setMaximumSize(new Dimension(Integer.MAX_VALUE, 60));
+
+                JLabel ticketID = new JLabel(ticket.getSerialNum().toString());
+                ticketItem.add(ticketID);
+
+                JLabel ownerID = new JLabel(ticket.getOwner().toString());
+                ticketItem.add(ownerID);
+
+                JLabel matchID = new JLabel(String.valueOf(ticket.getMatchID()));
+                ticketItem.add(matchID);
+
+                Match match = matchDAO.get(ticket.getMatchID());
+
+                JLabel date = new JLabel(match.getMatchDate().toString());
+                ticketItem.add(date);
+
+                JLabel time = new JLabel(match.getMatchTime().toString());
+                ticketItem.add(time);
+
+                JLabel venue = new JLabel(match.getLocation());
+                ticketItem.add(venue);
+
+                JLabel seat = new JLabel(String.valueOf(ticket.getSeat()));
+                ticketItem.add(seat);
+
+                ticketsListPanel.add(ticketItem);
+                ticketsListPanel.add(Box.createRigidArea(new Dimension(0, 10)));
+
+                JButton viewPDF = createStyledButton("View", new Color(0,119,182));
+                ticketItem.add(viewPDF);
+            }
+
         } catch (SQLException e) {
+            System.out.println(e.getMessage());
             e.printStackTrace();
         }
 
-        JScrollPane purchaseHistoryScrollPane = new JScrollPane(purchaseHistoryTable);
-        contentPanel.add(purchaseHistoryScrollPane);
+        contentPanel.add(ticketsListPanel);
 
         add(headerPanel, BorderLayout.NORTH);
         add(contentPanel, BorderLayout.CENTER);
+
+        pack();
 
         //Action listeners
         cancelButton.addActionListener(new ActionListener() {
@@ -102,23 +155,33 @@ public class TicketsFrame extends JFrame {
         });
     }
 
-    public void fillTable(DefaultTableModel tableModel) throws SQLException {
-        String query = "SELECT * FROM ticket WHERE id_utilisateur = ?";
-        Connection conn  = DatabaseConnection.getConnection();
-        PreparedStatement ps = conn.prepareStatement(query);
-        ps.setInt(1, user.getIdUtilisateur());
-        ResultSet rs = ps.executeQuery();
+    private JButton createStyledButton(String text, Color bgColor) {
+        JButton button = new JButton(text);
+        button.setFont(new Font("Segoe UI", Font.BOLD, 14));
+        button.setForeground(Color.WHITE);
+        button.setBackground(bgColor);
+        button.setFocusPainted(false);
+        button.setBorder(BorderFactory.createCompoundBorder(
+                BorderFactory.createLineBorder(bgColor.darker(), 1),
+                BorderFactory.createEmptyBorder(8, 20, 8, 20)
+        ));
+        button.setCursor(new Cursor(Cursor.HAND_CURSOR));
+        button.setOpaque(true);
+        button.setContentAreaFilled(true);
+        button.setBorderPainted(true);
+        return button;
+    }
 
-        tableModel.setRowCount(0);
-        while (rs.next()) {
-            Vector<Object> row = new Vector<>();
-            row.add(rs.getInt("id_ticket"));
-            row.add(rs.getInt("id_utilisateur"));
-            row.add(rs.getInt("id_match"));
-            row.add(rs.getInt("prix"));
-            row.add(rs.getInt("stock"));
-            row.add(rs.getString("statut"));
-            tableModel.addRow(row);
-        }
+    private JPanel createRoundedPanel(int radius, Color bgColor) {
+        return new JPanel() {
+            @Override
+            protected void paintComponent(Graphics g) {
+                super.paintComponent(g);
+                Graphics2D g2d = (Graphics2D) g;
+                g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+                g2d.setColor(bgColor);
+                g2d.fillRoundRect(0, 0, getWidth(), getHeight(), radius, radius);
+            }
+        };
     }
 }

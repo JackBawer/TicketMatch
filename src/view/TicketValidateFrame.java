@@ -128,7 +128,7 @@ public class TicketValidateFrame extends JFrame {
                 int matchID = match.getIdMatch();
                 System.out.println(userID);
                 System.out.println(matchID);
-                Ticket ticket = new Ticket(null, null, null, 5.00, match.getStadiumCap(), Ticket.ticketStatus.AVAILABLE);
+                Ticket ticket = new Ticket(null, null, null, 5.00, match.getStadiumCap(), Ticket.ticketStatus.AVAILABLE, null);
                 String seat = (String) seatComboBox.getSelectedItem();
                 if (user.getBalance() < ticket.getPrice()) {
                     JOptionPane.showMessageDialog(TicketValidateFrame.this,
@@ -140,6 +140,7 @@ public class TicketValidateFrame extends JFrame {
                     ticket.setMatchID(matchID);
                     ticket.setOwner(userID);
                     ticket.setStatus(Ticket.ticketStatus.SOLD_OUT);
+                    ticket.setSeat(seat);
                     try {
                         ticketDAO.insert(ticket);
                         JOptionPane.showMessageDialog(TicketValidateFrame.this,

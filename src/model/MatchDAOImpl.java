@@ -8,7 +8,7 @@ public class MatchDAOImpl implements MatchDAO {
 
     @Override
     public Match get(int id) throws SQLException {
-        String sql = "select * from match where 'id' = ?";
+        String sql = "select * from match where id_match = ?";
         try (Connection conn = DatabaseConnection.getConnection();) {
             PreparedStatement ps = conn.prepareStatement(sql);
             ps.setInt(1, id);
