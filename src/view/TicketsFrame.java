@@ -1,14 +1,19 @@
 package view;
 
 import model.*;
+import org.apache.pdfbox.pdmodel.PDDocument;
+import org.apache.pdfbox.pdmodel.PDPage;
+import org.apache.pdfbox.pdmodel.PDPageContentStream;
+import org.apache.pdfbox.pdmodel.font.PDType1Font;
+import org.apache.pdfbox.pdmodel.font.Standard14Fonts;
 
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.IOException;
 import java.sql.SQLException;
 
-import java.util.ArrayList;
 import java.util.List;
 
 public class TicketsFrame extends JFrame {
@@ -132,6 +137,19 @@ public class TicketsFrame extends JFrame {
 
                 JButton viewPDF = createStyledButton("View", new Color(0,119,182));
                 ticketItem.add(viewPDF);
+
+                viewPDF.addActionListener(new ActionListener() {
+                    @Override
+                    public void actionPerformed(ActionEvent e) {
+                        try {
+                            PDFViewer pdfViewer = new PDFViewer(generatePDF(ticket, match, seat.getText()));
+                            pdfViewer.setVisible(true);
+                            dispose();
+                        } catch (IOException ex) {
+                            ex.printStackTrace();
+                        }
+                    }
+                });
             }
 
         } catch (SQLException e) {
@@ -150,6 +168,8 @@ public class TicketsFrame extends JFrame {
         cancelButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
+                MainFrame mainFrame = new MainFrame(user);
+                mainFrame.setVisible(true);
                 dispose();
             }
         });
@@ -183,5 +203,37 @@ public class TicketsFrame extends JFrame {
                 g2d.fillRoundRect(0, 0, getWidth(), getHeight(), radius, radius);
             }
         };
+    }
+
+    public PDDocument generatePDF(Ticket ticket, Match match, String seat) throws IOException {
+        String filename = "ticket.pdf";
+
+        PDDocument document = new PDDocument();
+        PDPage page = new PDPage();
+        document.addPage(page);
+
+        PDPageContentStream contentStream = new PDPageContentStream(document, page);
+        PDType1Font font = new PDType1Font(Standard14Fonts.FontName.HELVETICA);
+        contentStream.beginText();
+        contentStream.newLineAtOffset(100, 700);
+        contentStream.showText("Ticket ID: " + ticket.getSerialNum());
+        contentStream.newLineAtOffset(100, 700);
+        contentStream.showText("Owner ID: " + ticket.getOwner());
+        contentStream.newLineAtOffset(100, 700);
+        contentStream.showText("Match ID: " + ticket.getMatchID());
+        contentStream.newLineAtOffset(100, 700);
+        contentStream.showText("Date: " + match.getMatchDate());
+        contentStream.newLineAtOffset(100, 700);
+        contentStream.showText("Time: " + match.getMatchTime());
+        contentStream.newLineAtOffset(100, 700);
+        contentStream.showText("Venue: " + match.getLocation());
+        contentStream.newLineAtOffset(100, 700);
+        contentStream.showText("Seat: " + seat);
+
+        contentStream.endText();
+        contentStream.close();
+
+        document.save(filename);
+        return document;
     }
 }

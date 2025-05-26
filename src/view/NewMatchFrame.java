@@ -184,12 +184,9 @@ public class NewMatchFrame extends JFrame {
                 location,
                 capacityValue
         );
-
-        matchDAO.insert(newMatch);
-
         showSuccess("Match added successfully!");
-        adminFrame.revalidate();
-        adminFrame.repaint();
+        matchDAO.insert(newMatch);
+        adminFrame.setVisible(true);
         dispose();
     }
 

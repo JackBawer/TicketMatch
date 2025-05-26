@@ -242,6 +242,7 @@ public class AdminFrame extends JFrame {
         addNewMatchButton.addActionListener(e -> {
             NewMatchFrame newMatchFrame = new NewMatchFrame(AdminFrame.this);
             newMatchFrame.setVisible(true);
+            dispose();
         });
 
     }

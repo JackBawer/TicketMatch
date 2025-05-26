@@ -145,11 +145,9 @@ public class MainFrame extends JFrame {
                 matchItem.setBorder(BorderFactory.createEmptyBorder(10, 15, 10, 15));
                 matchItem.setMaximumSize(new Dimension(Integer.MAX_VALUE, 60));
 
-                // Home team
                 JLabel team1 = createMatchLabel(match.getTeam1());
                 matchItem.add(team1);
 
-                // Away team
                 JLabel team2 = createMatchLabel(match.getTeam2());
                 matchItem.add(team2);
 
@@ -215,6 +213,7 @@ public class MainFrame extends JFrame {
         myTicketsButton.addActionListener(e -> {
             TicketsFrame ticketsFrame = new TicketsFrame(user);
             ticketsFrame.setVisible(true);
+            dispose();
         });
     }
 

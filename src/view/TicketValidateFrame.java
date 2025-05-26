@@ -7,10 +7,6 @@ import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
-import org.apache.pdfbox.pdmodel.PDDocument;
-import org.apache.pdfbox.pdmodel.PDPage;
-import org.apache.pdfbox.pdmodel.PDPageContentStream;
-
 import java.io.IOException;
 import java.sql.SQLException;
 import java.util.Random;
@@ -154,23 +150,10 @@ public class TicketValidateFrame extends JFrame {
                                 ex.getMessage(),
                                 "Error",
                                 JOptionPane.ERROR_MESSAGE);
+                        ex.printStackTrace();
                     }
                 }
             }
         });
-    }
-
-    public void generatePDF(Ticket ticket, String seat) throws IOException {
-        String filename = "ticket.pdf";
-
-        PDDocument document = new PDDocument();
-        PDPage page = new PDPage();
-        document.addPage(page);
-
-        PDPageContentStream contentStream = new PDPageContentStream(document, page);
-        contentStream.beginText();
-        contentStream.newLineAtOffset(100,700);
-
-
     }
 }
